@@ -1,0 +1,91 @@
+trigger:
+  branches:
+    include:
+    - '*'
+
+variables:
+  vmImage: 'ubuntu-latest'
+  sdkVersion: '3.1.x'
+  buildConfiguration: 'Release'
+  txsNugetFeedReference: 'b90b9fed-30a9-4c80-abb3-080ff31b7ab9'
+  versionSuffix: $[counter(variables['Build.DefinitionName'], 0)]
+
+stages:
+  - stage:
+    displayName: 'Build & Test'
+
+    jobs:
+      - job:
+        displayName: 'Build & Test'
+        pool:
+          vmImage: $(vmImage)
+
+        steps:
+        - checkout: self
+          fetchDepth: 1
+
+        - task: PowerShell@2
+          displayName: 'Determine buildnumber'
+          inputs:
+            targetType: 'inline'
+            script: |
+              $xml = [Xml] (Get-Content (Get-ChildItem -Path . -Filter shared.props -Recurse))
+              $versionXml = $xml | Select-Xml -Xpath "//VersionPrefix"
+              $version = [Version] ($versionXml | Select-Object -ExpandProperty Node | Select-Object -ExpandProperty InnerXml)
+              Write-Host "##vso[build.updatebuildnumber]$version-$(versionSuffix)"
+            pwsh: true
+
+        - task: UseDotNet@2
+          displayName: 'Install .NET SDK'
+          inputs:
+            packageType: 'sdk'
+            version: $(sdkVersion)
+
+        - task: DotNetCoreCLI@2
+          displayName: Restore nupkg(s)
+          inputs:
+            command: 'restore'
+            projects: '**/*.csproj'
+            feedsToUse: 'select'
+            vstsFeed: $(txsNugetFeedReference)
+
+        - task: DotNetCoreCLI@2
+          displayName: Build projects
+          inputs:
+            command: 'build'
+            projects: '**/*.csproj'
+            arguments: '--no-restore --configuration $(buildConfiguration) --version-suffix $(versionSuffix)'
+
+        - task: DotNetCoreCLI@2
+          displayName: Install coverlet
+          inputs:
+            command: 'custom'
+            custom: 'tool'
+            arguments: 'install --global coverlet.console --ignore-failed-sources'
+
+        - task: DotNetCoreCLI@2
+          displayName: Run unittests
+          inputs:
+            command: 'test'
+            projects: '**/*UnitTest*.csproj'
+            arguments: '--no-build --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[*Test*]" /p:Include="[TXS.*.Domain]*%2c[TXS.*.Application]*%2c[TXS.*.Resources]*"'
+
+        - task: PublishCodeCoverageResults@1
+          displayName: Publish codecoverage
+          inputs:
+            codeCoverageTool: 'Cobertura'
+            summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.cobertura.xml'
+
+        - task: DotNetCoreCLI@2
+          displayName: Publish package
+          inputs:
+            command: 'publish'
+            publishWebProjects: false
+            projects: '**/*.Presentation.API.csproj'
+            arguments: '--output $(Pipeline.Workspace)/artifacts --no-build --configuration $(buildConfiguration)'
+            zipAfterPublish: false
+            modifyOutputPath: false
+
+        - publish: $(Pipeline.Workspace)/artifacts
+          displayName: Publish artifacts
+          artifact: 'artifacts'
