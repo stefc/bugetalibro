@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{830BD968-60AF-433C-BB12-7538CC41D7FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TXS.buĝetalibro.Domain", "backend\TXS.buĝetalibro.Domain\TXS.buĝetalibro.Domain.csproj", "{6D545B59-74BA-4454-A779-DC184F6E0805}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TXS.bugetalibro.Domain", "backend\TXS.bugetalibro.Domain\TXS.bugetalibro.Domain.csproj", "{6D545B59-74BA-4454-A779-DC184F6E0805}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TXS.buĝetalibro.UnitTests", "backend\TXS.buĝetalibro.UnitTests\TXS.buĝetalibro.UnitTests.csproj", "{D2168AD8-C737-4BF8-9919-9D2EFED6D156}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TXS.bugetalibro.UnitTests", "backend\TXS.bugetalibro.UnitTests\TXS.bugetalibro.UnitTests.csproj", "{D2168AD8-C737-4BF8-9919-9D2EFED6D156}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

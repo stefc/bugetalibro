@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/backend/TXS.buĝetalibro.UnitTests/bin/Debug/netcoreapp3.1/TXS.buĝetalibro.UnitTests.dll",
+            "program": "${workspaceFolder}/backend/TXS.bugetalibro.UnitTests/bin/Debug/netcoreapp3.1/TXS.bugetalibro.UnitTests.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/backend/TXS.buĝetalibro.UnitTests",
+            "cwd": "${workspaceFolder}/backend/TXS.bugetalibro.UnitTests",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false

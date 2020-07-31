@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-		<ProjectReference Include="..\TXS.buĝetalibro.Domain\TXS.buĝetalibro.Domain.csproj" />
+		<ProjectReference Include="..\TXS.bugetalibro.Domain\TXS.bugetalibro.Domain.csproj" />
 	</ItemGroup>
 
 </Project>

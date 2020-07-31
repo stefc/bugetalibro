@@ -8,7 +8,7 @@
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>$(BaseDir)TXS.buĝetalibro.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>$(BaseDir)TXS.bugetalibro.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -18,13 +18,13 @@
 		<Authors>$(Company)</Authors>
 		<Copyright>Copyright © $(Company) 2020,$([System.DateTime]::Now.Year)</Copyright>
 		<Trademark>$(Company)™</Trademark>
-		<Product>TXS buĝetalibro</Product>
+		<Product>TXS Buĝeta Libro</Product>
 		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>TXS.buĝetalibro.UnitTests,PublicKey=0024000004800000940000000602000000240000525341310004000001000100d31c7dd05dda14d2fc8661150ad862f7ef30351ac11edb08c8eca52f1e47c9b7a1526f42d1948b54a68664b1ecc450b3c51d235ef2402a85ebb256cb63c11cfad62e260b51061dba8612a3cca309b36b68bec33176edfaecfa444491396d582084eaf6a995bd166581f3cd450da55de364c1fb36226dda4ddb4f32ad29c7d7c2</_Parameter1>
+			<_Parameter1>TXS.bugetalibro.UnitTests,PublicKey=0024000004800000940000000602000000240000525341310004000001000100d31c7dd05dda14d2fc8661150ad862f7ef30351ac11edb08c8eca52f1e47c9b7a1526f42d1948b54a68664b1ecc450b3c51d235ef2402a85ebb256cb63c11cfad62e260b51061dba8612a3cca309b36b68bec33176edfaecfa444491396d582084eaf6a995bd166581f3cd450da55de364c1fb36226dda4ddb4f32ad29c7d7c2</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
 

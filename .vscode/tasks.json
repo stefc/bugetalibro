@@ -7,10 +7,30 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/backend/TXS.buĝetalibro.UnitTests/TXS.buĝetalibro.UnitTests.csproj",
+                "${workspaceFolder}/backend/TXS.bugetalibro.UnitTests/TXS.bugetalibro.UnitTests.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "test",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/backend/TXS.bugetalibro.UnitTests/TXS.bugetalibro.UnitTests.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
             "problemMatcher": "$msCompile"
         },
         {
@@ -19,7 +39,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/backend/TXS.buĝetalibro.UnitTests/TXS.buĝetalibro.UnitTests.csproj",
+                "${workspaceFolder}/backend/TXS.bugetalibro.UnitTests/TXS.bugetalibro.UnitTests.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,7 +52,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/backend/TXS.buĝetalibro.UnitTests/TXS.buĝetalibro.UnitTests.csproj",
+                "${workspaceFolder}/backend/TXS.bugetalibro.UnitTests/TXS.bugetalibro.UnitTests.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

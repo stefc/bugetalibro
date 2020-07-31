@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TXS.Shared;
 
-namespace TXS.buĝetalibro.Domain.ValueObjects
+namespace TXS.bugetalibro.Domain.ValueObjects
 {
     public class Kategorie : ValueObject<Kategorie>
     {
