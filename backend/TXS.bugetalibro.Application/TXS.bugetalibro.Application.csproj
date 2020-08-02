@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\shared.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="TXS.Shared" Version="0.6.0.46" />
+    <PackageReference Include="MediatR" Version="7.0.0" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+		<ProjectReference Include="..\TXS.bugetalibro.Domain\TXS.bugetalibro.Domain.csproj" />
+	</ItemGroup>
+
+
+</Project>

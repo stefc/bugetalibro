@@ -14,6 +14,7 @@
 
   <ItemGroup>
 		<ProjectReference Include="..\TXS.bugetalibro.Domain\TXS.bugetalibro.Domain.csproj" />
+		<ProjectReference Include="..\TXS.bugetalibro.Application\TXS.bugetalibro.Application.csproj" />
 	</ItemGroup>
 
 </Project>

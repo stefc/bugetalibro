@@ -14,7 +14,7 @@ namespace TXS.bugetalibro.Domain.Entities
             if (betrag <= 0m)
                 throw new ArgumentOutOfRangeException(nameof(betrag), "Betrag muss > 0 sein");
             
-            if (datum.TimeOfDay.Milliseconds > 0)
+            if (datum.TimeOfDay.TotalMilliseconds > 0)
                 throw new ArgumentOutOfRangeException(nameof(datum), "Nur Datümer ohne Zeitanteil zulässig");
 
             this.Id = Guid.NewGuid();
