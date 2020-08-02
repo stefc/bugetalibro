@@ -41,18 +41,16 @@ stages:
             packageType: 'sdk'
             version: $(sdkVersion)
 
-        
         - task: DotNetCoreCLI@2
           displayName: Add Private Feed
           inputs: 
-            command: custom
-            custom: nuget 
+            command: 'custom'
+            custom: 'nuget'
             arguments: >
-              add source "dfdfdf"
-              --name TXS
-              --username unknown
-              --password ${{secrets.EMPORIO}}
-              --store-password-in-clear-text
+              'add source "dfdfdf"'
+              '--name TXS'
+              '--username unknown'
+              '--store-password-in-clear-text'
 
         - task: DotNetCoreCLI@2
           displayName: Restore nupkg(s)
