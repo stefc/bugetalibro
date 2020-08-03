@@ -17,6 +17,13 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.301
+    - shell: bash
+        env:
+          EMPORIO_SECRET: ${{ secrets.emporio }}
+        run: |
+          echo $EMPORIO_SECRET
+          sed -i "s/{{secrets.emporio}}/$EMPORIO_SECRET/" nuget.config
+          cat nuget.config
     - name: Install dependencies
       run: dotnet restore
     - name: Build
