@@ -6,14 +6,12 @@ namespace TXS.bugetalibro.Domain.ValueObjects
 {
     public class Kategorie : ValueObject<Kategorie>
     {
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public Kategorie(string name)
         {
-            if (String.IsNullOrEmpty(name))
-            {
+            if (string.IsNullOrEmpty(name)) 
                 throw new ArgumentNullException(nameof(name));
-            }
             this.Name = name;
         }
         protected override IEnumerable<object> GetAtomicValues()

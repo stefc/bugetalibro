@@ -4,11 +4,10 @@ namespace TXS.bugetalibro.Domain.Entities
 {    
     public abstract class Buchung
     {
-        public Guid Id { get; private set; }
-        public DateTime Datum { get;  private set; }
-        public decimal Betrag { get;  private set; }
+        public Guid Id { get; }
+        public DateTime Datum { get; }
+        public decimal Betrag { get; }
 
-        private Buchung(){}
         public Buchung(DateTime datum, decimal betrag)
         {
             if (betrag <= 0m)
