@@ -20,7 +20,9 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
         internal override async Task Execute(IMediator mediator, CancellationToken cancellationToken)
         {
             var request = new CreateEinzahlung.Request {Betrag = this.Betrag, Datum = this.Datum ?? DateTime.Today};
-            await mediator.Send(request, cancellationToken);
+            var kassenbestand = await mediator.Send(request, cancellationToken);
+
+            Console.WriteLine($"Kassenbestand: {kassenbestand:N2} EUR");
         }
     }
 }

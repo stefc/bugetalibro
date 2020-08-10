@@ -12,7 +12,7 @@ namespace TXS.bugetalibro.Application
         public class Request : IRequest<decimal>
         {
             public decimal Betrag { get; set; }
-            public DateTime Datum { get; set; } = DateTime.Now;
+            public DateTime Datum { get; set; }
         }
 
         internal class Handler : IRequestHandler<Request, decimal>
