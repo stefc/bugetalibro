@@ -15,9 +15,9 @@ namespace TXS.bugetalibro.Application.Contracts.Data
     public interface IDataSet<T> : IQueryable<T>, IAsyncEnumerable<T>
         where T : class
     {
-        Lazy<int> Insert(T entity);
-        Lazy<int> InsertOrUpdate(T entity);
-        void Update(int id, object values);
+        void Insert(T entity);
+        void InsertOrUpdate(T entity);
+        void Update(Guid id, object values);
         void Delete(T entity);
     }    
 }

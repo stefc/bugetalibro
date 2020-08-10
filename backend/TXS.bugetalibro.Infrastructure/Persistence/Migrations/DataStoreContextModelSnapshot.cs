@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TXS.bugetalibro.Infrastructure.Persistence;
 
-namespace TXS.bugetalibro.Infrastructure.Migrations
+namespace TXS.bugetalibro.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DataStoreContext))]
     partial class DataStoreContextModelSnapshot : ModelSnapshot
@@ -22,8 +22,8 @@ namespace TXS.bugetalibro.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Betrag")
-                        .HasColumnType("TEXT");
+                    b.Property<double>("Betrag")
+                        .HasColumnType("REAL");
 
                     b.Property<DateTime>("Datum")
                         .HasColumnType("TEXT");
@@ -42,8 +42,8 @@ namespace TXS.bugetalibro.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Betrag")
-                        .HasColumnType("TEXT");
+                    b.Property<double>("Betrag")
+                        .HasColumnType("REAL");
 
                     b.Property<DateTime>("Datum")
                         .HasColumnType("TEXT");

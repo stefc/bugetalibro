@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TXS.bugetalibro.Infrastructure.Persistence;
 
-namespace TXS.bugetalibro.Infrastructure.Migrations
+namespace TXS.bugetalibro.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DataStoreContext))]
-    [Migration("20200810133927_Initial")]
+    [Migration("20200810140025_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,8 +24,8 @@ namespace TXS.bugetalibro.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Betrag")
-                        .HasColumnType("TEXT");
+                    b.Property<double>("Betrag")
+                        .HasColumnType("REAL");
 
                     b.Property<DateTime>("Datum")
                         .HasColumnType("TEXT");
@@ -44,8 +44,8 @@ namespace TXS.bugetalibro.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Betrag")
-                        .HasColumnType("TEXT");
+                    b.Property<double>("Betrag")
+                        .HasColumnType("REAL");
 
                     b.Property<DateTime>("Datum")
                         .HasColumnType("TEXT");

@@ -12,6 +12,7 @@ namespace TXS.bugetalibro.Infrastructure
         {
             return services
                 .AddDbContextPool<DataStoreContext>(DataStoreConnectionSettings.Setup)
+                .AddScoped<IDataStore>(sp => sp.GetService<DataStoreContext>())
                 .AddTransient<IDataStoreInitializer, DataStoreInitializer>()
                 .AddTransient<IDateProvider, SystemDateProvider>();
         }

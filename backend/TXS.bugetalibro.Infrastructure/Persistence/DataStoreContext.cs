@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TXS.bugetalibro.Application.Contracts.Data;
 
 namespace TXS.bugetalibro.Infrastructure.Persistence
@@ -33,13 +32,13 @@ namespace TXS.bugetalibro.Infrastructure.Persistence
                 this.dbSet = dbContext.Set<T>();
             }
 
-            Lazy<int> IDataSet<T>.Insert(T entity) => this.IdAccessor(this.dbContext.Attach(entity));
+            void IDataSet<T>.Insert(T entity) => this.dbContext.Add(entity);
 
-            Lazy<int> IDataSet<T>.InsertOrUpdate(T entity) => this.IdAccessor(this.dbContext.Update(entity));
+            void IDataSet<T>.InsertOrUpdate(T entity) => this.dbContext.Update(entity);
 
             void IDataSet<T>.Delete(T entity) => this.dbContext.Remove(entity);
 
-            void IDataSet<T>.Update(int id, object values)
+            void IDataSet<T>.Update(Guid id, object values)
             {
                 var existingEntity = this.dbContext.Find<T>(id);
                 if (existingEntity == null)
@@ -47,18 +46,6 @@ namespace TXS.bugetalibro.Infrastructure.Persistence
 
                 this.dbContext.Entry(existingEntity).CurrentValues.SetValues(values);
             }
-
-            private Lazy<int> IdAccessor(EntityEntry<T> entry)
-            {
-                return new Lazy<int>(() =>
-                {
-                    if (entry.State != EntityState.Unchanged)
-                        throw new InvalidOperationException(
-                            "Access to Primarykey not possible before entity is saved (call SaveChanges first)");
-                    return entry.CurrentValues.GetValue<int>("Id");
-                });
-            }
-
 
             #region IQueryable, IAsyncEnumerable implementation
 

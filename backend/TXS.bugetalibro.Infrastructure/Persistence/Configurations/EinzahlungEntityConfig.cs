@@ -10,7 +10,7 @@ namespace TXS.bugetalibro.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(e => e.Id);
             
-            builder.Property(e => e.Betrag).IsRequired();
+            builder.Property(e => e.Betrag).HasConversion<double>().IsRequired();
             builder.Property(e => e.Datum).IsRequired();
         }
     }

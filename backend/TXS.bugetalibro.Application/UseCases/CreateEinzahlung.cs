@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
@@ -30,9 +31,11 @@ namespace TXS.bugetalibro.Application.UseCases
                 var einzahlung = new Einzahlung(request.Datum, request.Betrag);
                 this.dataStore.Set<Einzahlung>().Insert(einzahlung);
                 await this.dataStore.SaveChangesAsync(cancellationToken);
-                
-                var kassenbestand = 0m; // TODO: Kassenbestand ermitteln
-                return kassenbestand;
+
+                var sumEinzahlungen = this.dataStore.Set<Einzahlung>().Sum(e => e.Betrag);
+                var sumAuszahlungen = this.dataStore.Set<Auszahlung>().Sum(e => e.Betrag);
+
+                return sumEinzahlungen - sumAuszahlungen;
             }
         }
 
