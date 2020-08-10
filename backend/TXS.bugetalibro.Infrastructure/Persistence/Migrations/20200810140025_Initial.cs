@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace TXS.bugetalibro.Infrastructure.Migrations
+namespace TXS.bugetalibro.Infrastructure.Persistence.Migrations
 {
     public partial class Initial : Migration
     {
@@ -13,7 +13,7 @@ namespace TXS.bugetalibro.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Datum = table.Column<DateTime>(nullable: false),
-                    Betrag = table.Column<decimal>(nullable: false),
+                    Betrag = table.Column<double>(nullable: false),
                     Notiz = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -27,7 +27,7 @@ namespace TXS.bugetalibro.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Datum = table.Column<DateTime>(nullable: false),
-                    Betrag = table.Column<decimal>(nullable: false)
+                    Betrag = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
