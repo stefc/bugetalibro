@@ -10,5 +10,10 @@ namespace TXS.bugetalibro.Application
             public const string Development = nameof(Development);
             public const string Production = nameof(Production);
         }
+
+        public static class ConnectionStringKeys
+        {
+            public const string Database = nameof(Database);
+        }
     }
 }

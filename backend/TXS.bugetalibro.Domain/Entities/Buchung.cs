@@ -4,6 +4,7 @@ namespace TXS.bugetalibro.Domain.Entities
 {
     public abstract class Buchung
     {
+        protected Buchung() { }
         public Buchung(DateTime datum, decimal betrag)
         {
             if (betrag <= 0m)
