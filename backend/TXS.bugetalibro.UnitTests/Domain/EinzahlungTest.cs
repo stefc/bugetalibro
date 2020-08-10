@@ -1,10 +1,8 @@
 using System;
+using TXS.bugetalibro.Domain.Entities;
 using Xunit;
 
-
-using TXS.bugetalibro.Domain.Entities;
-
-namespace TXS.bugetalibro.UnitTests.Domain.ValueObjects
+namespace TXS.bugetalibro.UnitTests.Domain
 {
     public class EinzahlungTest
     {

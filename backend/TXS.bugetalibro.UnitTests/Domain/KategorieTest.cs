@@ -1,9 +1,8 @@
 using System;
+using TXS.bugetalibro.Domain.ValueObjects;
 using Xunit;
 
-using TXS.bugetalibro.Domain.ValueObjects;
-
-namespace TXS.bugetalibro.UnitTests.Domain.ValueObjects
+namespace TXS.bugetalibro.UnitTests.Domain
 {
     public class KategorieTest
     {
