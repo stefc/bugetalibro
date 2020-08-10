@@ -5,4 +5,13 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="CommandLineParser" Version="2.8.0" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.6" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\backend\TXS.bugetalibro.Application\TXS.bugetalibro.Application.csproj" />
+    </ItemGroup>
+
 </Project>

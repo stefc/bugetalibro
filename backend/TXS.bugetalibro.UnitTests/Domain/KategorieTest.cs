@@ -11,7 +11,7 @@ namespace TXS.bugetalibro.UnitTests.Domain
         [InlineData("")]
         public void TestInvalid(string code)
         {
-            Assert.Throws<ArgumentNullException>((() => new Kategorie(code)));
+            Assert.Throws<ArgumentNullException>(() => new Kategorie(code));
         }
     }
 }

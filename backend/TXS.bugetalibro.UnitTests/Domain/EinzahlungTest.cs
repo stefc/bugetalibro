@@ -14,21 +14,21 @@ namespace TXS.bugetalibro.UnitTests.Domain
             Assert.Throws<ArgumentOutOfRangeException>(() => new Einzahlung(DateTime.Today, betrag));
         }
 
-        [Fact] 
-        public void TestInvalidDatum()
-        {
-            Assert.Throws<ArgumentOutOfRangeException>((()=> new Einzahlung(new DateTime(2010,1,1,10,23,5), 100m)));
-        }
-
         [Fact]
         public void TestCreateEinzahlung()
         {
-            var datum = new DateTime(2010,1,1);
+            var datum = new DateTime(2010, 1, 1);
             var subject = new Einzahlung(datum, 100m);
 
             Assert.Equal(datum, subject.Datum);
             Assert.Equal(100m, subject.Betrag);
             Assert.NotEqual(Guid.Empty, subject.Id);
+        }
+
+        [Fact]
+        public void TestInvalidDatum()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => new Einzahlung(new DateTime(2010, 1, 1, 10, 23, 5), 100m));
         }
     }
 }

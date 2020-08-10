@@ -13,6 +13,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TXS.bugetalibro.Application
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TXS.bugetalibro.ConsoleApp", "TXS.bugetalibro.ConsoleApp\TXS.bugetalibro.ConsoleApp.csproj", "{001C52A4-7BC2-4959-9DCF-0DD2A14A8B82}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_bugetalibro", "_bugetalibro", "{95E181A9-9394-44E7-8ED2-4BA35120D3D0}"
+ProjectSection(SolutionItems) = preProject
+	.editorconfig = .editorconfig
+	.gitignore = .gitignore
+	nuget.config = nuget.config
+	README.md = README.md
+	shared.props = shared.props
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

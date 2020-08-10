@@ -1,18 +1,14 @@
 using System;
 
 namespace TXS.bugetalibro.Domain.Entities
-{    
+{
     public abstract class Buchung
     {
-        public Guid Id { get; }
-        public DateTime Datum { get; }
-        public decimal Betrag { get; }
-
         public Buchung(DateTime datum, decimal betrag)
         {
             if (betrag <= 0m)
                 throw new ArgumentOutOfRangeException(nameof(betrag), "Betrag muss > 0 sein");
-            
+
             if (datum.TimeOfDay.TotalMilliseconds > 0)
                 throw new ArgumentOutOfRangeException(nameof(datum), "Nur Datümer ohne Zeitanteil zulässig");
 
@@ -20,5 +16,9 @@ namespace TXS.bugetalibro.Domain.Entities
             this.Datum = datum;
             this.Betrag = betrag;
         }
+
+        public Guid Id { get; }
+        public DateTime Datum { get; }
+        public decimal Betrag { get; }
     }
 }
