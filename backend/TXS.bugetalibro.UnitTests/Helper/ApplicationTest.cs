@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.Internal;
 using TXS.bugetalibro.Application;
 using TXS.bugetalibro.Application.Contracts;
+using TXS.bugetalibro.Infrastructure;
 using TXS.Shared.Helper;
 
 using Xunit;
@@ -37,6 +38,7 @@ namespace TXS.bugetalibro.UnitTests.Helper
             baseServices.AddTransient<IConfiguration>(sp => testConfiguration);
             
             baseServices.AddApplicationServices();
+            baseServices.AddInfrastructureServices();
             
             baseServices.Replace(ServiceDescriptor.Transient<IDateProvider>(sp => new TestOverrides.DateProvider()));
         }

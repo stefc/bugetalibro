@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\backend\TXS.bugetalibro.Application\TXS.bugetalibro.Application.csproj" />
+      <ProjectReference Include="..\backend\TXS.bugetalibro.Infrastructure\TXS.bugetalibro.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

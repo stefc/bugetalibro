@@ -2,8 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TXS.bugetalibro.Application;
-using TXS.bugetalibro.ConsoleApp.Commands;
 using TXS.bugetalibro.ConsoleApp.Infrastructure;
+using TXS.bugetalibro.Infrastructure;
 
 namespace TXS.bugetalibro.ConsoleApp
 {
@@ -22,6 +22,7 @@ namespace TXS.bugetalibro.ConsoleApp
                         .AddSingleton<IHostedService, CliService>();
 
                     services.AddApplicationServices();
+                    services.AddInfrastructureServices();
                 })
                 .UseConsoleLifetime()
                 .Build();

@@ -22,6 +22,8 @@ ProjectSection(SolutionItems) = preProject
 	shared.props = shared.props
 EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TXS.bugetalibro.Infrastructure", "backend\TXS.bugetalibro.Infrastructure\TXS.bugetalibro.Infrastructure.csproj", "{B23B7B90-0240-4423-84C3-919E58E99CF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,10 +85,23 @@ Global
 		{001C52A4-7BC2-4959-9DCF-0DD2A14A8B82}.Release|x64.Build.0 = Release|Any CPU
 		{001C52A4-7BC2-4959-9DCF-0DD2A14A8B82}.Release|x86.ActiveCfg = Release|Any CPU
 		{001C52A4-7BC2-4959-9DCF-0DD2A14A8B82}.Release|x86.Build.0 = Release|Any CPU
+		{B23B7B90-0240-4423-84C3-919E58E99CF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B23B7B90-0240-4423-84C3-919E58E99CF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B23B7B90-0240-4423-84C3-919E58E99CF5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B23B7B90-0240-4423-84C3-919E58E99CF5}.Debug|x64.Build.0 = Debug|Any CPU
+		{B23B7B90-0240-4423-84C3-919E58E99CF5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B23B7B90-0240-4423-84C3-919E58E99CF5}.Debug|x86.Build.0 = Debug|Any CPU
+		{B23B7B90-0240-4423-84C3-919E58E99CF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B23B7B90-0240-4423-84C3-919E58E99CF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B23B7B90-0240-4423-84C3-919E58E99CF5}.Release|x64.ActiveCfg = Release|Any CPU
+		{B23B7B90-0240-4423-84C3-919E58E99CF5}.Release|x64.Build.0 = Release|Any CPU
+		{B23B7B90-0240-4423-84C3-919E58E99CF5}.Release|x86.ActiveCfg = Release|Any CPU
+		{B23B7B90-0240-4423-84C3-919E58E99CF5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6D545B59-74BA-4454-A779-DC184F6E0805} = {830BD968-60AF-433C-BB12-7538CC41D7FD}
 		{D2168AD8-C737-4BF8-9919-9D2EFED6D156} = {830BD968-60AF-433C-BB12-7538CC41D7FD}
 		{A5515A99-4EC6-49FD-A502-D9542F07FB33} = {830BD968-60AF-433C-BB12-7538CC41D7FD}
+		{B23B7B90-0240-4423-84C3-919E58E99CF5} = {830BD968-60AF-433C-BB12-7538CC41D7FD}
 	EndGlobalSection
 EndGlobal
