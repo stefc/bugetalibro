@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TXS.bugetalibro.Domain", "b
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TXS.bugetalibro.UnitTests", "backend\TXS.bugetalibro.UnitTests\TXS.bugetalibro.UnitTests.csproj", "{D2168AD8-C737-4BF8-9919-9D2EFED6D156}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TXS.bugetalibro.Application", "backend\TXS.bugetalibro.Application\TXS.bugetalibro.Application.csproj", "{A5515A99-4EC6-49FD-A502-D9542F07FB33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,9 +48,22 @@ Global
 		{D2168AD8-C737-4BF8-9919-9D2EFED6D156}.Release|x64.Build.0 = Release|Any CPU
 		{D2168AD8-C737-4BF8-9919-9D2EFED6D156}.Release|x86.ActiveCfg = Release|Any CPU
 		{D2168AD8-C737-4BF8-9919-9D2EFED6D156}.Release|x86.Build.0 = Release|Any CPU
+		{A5515A99-4EC6-49FD-A502-D9542F07FB33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5515A99-4EC6-49FD-A502-D9542F07FB33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5515A99-4EC6-49FD-A502-D9542F07FB33}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A5515A99-4EC6-49FD-A502-D9542F07FB33}.Debug|x64.Build.0 = Debug|Any CPU
+		{A5515A99-4EC6-49FD-A502-D9542F07FB33}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A5515A99-4EC6-49FD-A502-D9542F07FB33}.Debug|x86.Build.0 = Debug|Any CPU
+		{A5515A99-4EC6-49FD-A502-D9542F07FB33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5515A99-4EC6-49FD-A502-D9542F07FB33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5515A99-4EC6-49FD-A502-D9542F07FB33}.Release|x64.ActiveCfg = Release|Any CPU
+		{A5515A99-4EC6-49FD-A502-D9542F07FB33}.Release|x64.Build.0 = Release|Any CPU
+		{A5515A99-4EC6-49FD-A502-D9542F07FB33}.Release|x86.ActiveCfg = Release|Any CPU
+		{A5515A99-4EC6-49FD-A502-D9542F07FB33}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6D545B59-74BA-4454-A779-DC184F6E0805} = {830BD968-60AF-433C-BB12-7538CC41D7FD}
 		{D2168AD8-C737-4BF8-9919-9D2EFED6D156} = {830BD968-60AF-433C-BB12-7538CC41D7FD}
+		{A5515A99-4EC6-49FD-A502-D9542F07FB33} = {830BD968-60AF-433C-BB12-7538CC41D7FD}
 	EndGlobalSection
 EndGlobal
