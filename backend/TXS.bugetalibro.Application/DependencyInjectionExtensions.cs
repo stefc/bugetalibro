@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using TXS.bugetalibro.Application.Behaviours;
 
 namespace TXS.bugetalibro.Application
 {
@@ -12,10 +13,8 @@ namespace TXS.bugetalibro.Application
 
             return services
                 .AddValidatorsFromAssembly(assembly)
-                .AddMediatR(assembly);
-            // .AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>))
-            // .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>))
-            // .AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
+                .AddMediatR(assembly)
+                .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         }
     }
 }

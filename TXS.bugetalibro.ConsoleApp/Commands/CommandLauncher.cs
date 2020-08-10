@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
+using FluentValidation;
 using MediatR;
 
 namespace TXS.bugetalibro.ConsoleApp.Commands
@@ -33,10 +34,17 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
         
         public async Task ExecuteCommandAsync(string[] args, CancellationToken cancellationToken)
         {
-            await this.commandParser
-                .ParseArguments(args, this.commandTypes)
-                .WithNotParsed(this.Help)
-                .WithParsedAsync<BaseCommand>(cmd => cmd.Execute(this.mediator, cancellationToken));
+            try
+            {
+                await this.commandParser
+                    .ParseArguments(args, this.commandTypes)
+                    .WithNotParsed(this.Help)
+                    .WithParsedAsync<BaseCommand>(cmd => cmd.Execute(this.mediator, cancellationToken));
+            }
+            catch (ValidationException e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
         
         private void Help(IEnumerable<Error> errors)
