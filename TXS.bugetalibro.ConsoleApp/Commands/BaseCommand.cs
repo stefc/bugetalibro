@@ -1,5 +1,6 @@
-﻿using System;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 
 namespace TXS.bugetalibro.ConsoleApp.Commands
 {
@@ -11,7 +12,6 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
         /// <summary>
         ///     Ausführen eines CLI-Kommandos
         /// </summary>
-        /// <param name="serviceProvider"></param>
-        internal abstract Task Execute(IServiceProvider serviceProvider);
+        internal abstract Task Execute(IMediator mediator, CancellationToken cancellationToken);
     }
 }

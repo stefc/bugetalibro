@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using TXS.bugetalibro.Application;
 
 namespace TXS.bugetalibro.ConsoleApp.Commands
@@ -17,10 +17,10 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
         [Option('b', "betrag", HelpText = "Betrag der eingezahlt werden soll.")]
         public decimal Betrag { get; set; }
 
-        internal override async Task Execute(IServiceProvider serviceProvider)
+        internal override async Task Execute(IMediator mediator, CancellationToken cancellationToken)
         {
             var request = new CreateEinzahlung.Request {Betrag = this.Betrag, Datum = this.Datum ?? DateTime.Today};
-            await serviceProvider.GetService<IMediator>().Send(request);
+            await mediator.Send(request, cancellationToken);
         }
     }
 }
