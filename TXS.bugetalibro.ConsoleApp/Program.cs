@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TXS.bugetalibro.Application;
 using TXS.bugetalibro.ConsoleApp.Commands;
+using TXS.bugetalibro.ConsoleApp.Infrastructure;
 
 namespace TXS.bugetalibro.ConsoleApp
 {

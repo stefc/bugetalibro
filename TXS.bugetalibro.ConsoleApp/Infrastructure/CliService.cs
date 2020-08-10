@@ -2,11 +2,9 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using TXS.bugetalibro.ConsoleApp.Commands;
 
-namespace TXS.bugetalibro.ConsoleApp
+namespace TXS.bugetalibro.ConsoleApp.Infrastructure
 {
     internal class CliService : BackgroundService
     {
