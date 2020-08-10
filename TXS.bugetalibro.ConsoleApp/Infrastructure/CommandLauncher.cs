@@ -40,7 +40,7 @@ namespace TXS.bugetalibro.ConsoleApp.Infrastructure
                 await this.commandParser
                     .ParseArguments(args, this.commandTypes)
                     .WithNotParsed(this.Help)
-                    .WithParsedAsync<BaseCommand>(cmd => cmd.Execute(this.mediator, cancellationToken));
+                    .WithParsedAsync<BaseCommand>(cmd => cmd.ExecuteAsync(this.mediator, cancellationToken));
             }
             catch (ValidationException e)
             {

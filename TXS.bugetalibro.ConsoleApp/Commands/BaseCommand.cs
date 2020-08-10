@@ -12,6 +12,6 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
         /// <summary>
         ///     Ausführen eines CLI-Kommandos
         /// </summary>
-        internal abstract Task Execute(IMediator mediator, CancellationToken cancellationToken);
+        internal abstract Task ExecuteAsync(IMediator mediator, CancellationToken cancellationToken);
     }
 }

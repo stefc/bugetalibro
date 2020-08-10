@@ -17,7 +17,7 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
         [Option('b', "betrag", HelpText = "Betrag der eingezahlt werden soll.")]
         public decimal Betrag { get; set; }
 
-        internal override async Task Execute(IMediator mediator, CancellationToken cancellationToken)
+        internal override async Task ExecuteAsync(IMediator mediator, CancellationToken cancellationToken)
         {
             var request = new CreateEinzahlung.Request {Betrag = this.Betrag, Datum = this.Datum ?? DateTime.Today};
             var kassenbestand = await mediator.Send(request, cancellationToken);

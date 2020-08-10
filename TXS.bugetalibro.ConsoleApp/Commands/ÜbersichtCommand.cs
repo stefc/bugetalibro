@@ -10,7 +10,7 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
     [Verb("übersicht", HelpText = "Hilfe Text zur Übersicht")]
     public class ÜbersichtCommand : BaseCommand
     {
-        internal override async Task Execute(IMediator mediator, CancellationToken cancellationToken)
+        internal override async Task ExecuteAsync(IMediator mediator, CancellationToken cancellationToken)
         {
             var request = new GetÜbersicht.Request { };
             var übersicht = await mediator.Send(request, cancellationToken);
