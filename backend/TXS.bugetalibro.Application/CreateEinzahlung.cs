@@ -2,6 +2,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentValidation;
 using MediatR;
 using TXS.bugetalibro.Domain.Entities;
 
@@ -12,15 +13,14 @@ namespace TXS.bugetalibro.Application
 		public class Request : IRequest<decimal>
 		{
             public decimal Betrag { get; set; }
-            public DateTime? Date { get; set; }
+            public DateTime Date { get; set; } = DateTime.Now;
         }
 
 		internal class Handler : IRequestHandler<Request, decimal>
 		{
 			public Task<decimal> Handle(Request request, CancellationToken cancellationToken)
             {
-                var einzahlungsDatum = request.Date ?? DateTime.Now;
-                var einzahlung = new Einzahlung(einzahlungsDatum, request.Betrag);
+                var einzahlung = new Einzahlung(request.Date, request.Betrag);
 
                 // using (var scope = this.unitOfWork.BeginWrite())
                 // {
@@ -33,5 +33,14 @@ namespace TXS.bugetalibro.Application
                 return Task.FromResult(kassenbestand);
             }
 		}
+
+         public class Validator : AbstractValidator<Request>
+         {
+             public Validator()
+             {
+                 this.RuleFor(req => req.Betrag).GreaterThan(0m);
+                 this.RuleFor(req => req.Date).NotEmpty();
+             }
+         }
 	}
 }
