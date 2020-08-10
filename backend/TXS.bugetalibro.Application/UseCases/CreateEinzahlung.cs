@@ -5,7 +5,7 @@ using FluentValidation;
 using MediatR;
 using TXS.bugetalibro.Domain.Entities;
 
-namespace TXS.bugetalibro.Application
+namespace TXS.bugetalibro.Application.UseCases
 {
     public static class CreateEinzahlung
     {

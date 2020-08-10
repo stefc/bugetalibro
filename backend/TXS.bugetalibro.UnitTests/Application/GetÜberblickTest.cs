@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using TXS.bugetalibro.Application;
+using TXS.bugetalibro.Application.UseCases;
 using TXS.bugetalibro.UnitTests.Helper;
 using Xunit;
 
@@ -11,7 +12,7 @@ namespace TXS.bugetalibro.UnitTests.Application
         public async Task TestInitial()
         {
             // (A)range 
-            var request = new GetÜberblick.Request();
+            var request = new GetÜbersicht.Request();
 
             // (A)ction
             var response = await this.Mediator.Send(request);

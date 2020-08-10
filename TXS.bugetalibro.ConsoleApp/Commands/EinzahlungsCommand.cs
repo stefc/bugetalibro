@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CommandLine;
 using MediatR;
 using TXS.bugetalibro.Application;
+using TXS.bugetalibro.Application.UseCases;
 
 namespace TXS.bugetalibro.ConsoleApp.Commands
 {

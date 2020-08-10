@@ -1,12 +1,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.Application.Models;
 
-namespace TXS.bugetalibro.Application
+namespace TXS.bugetalibro.Application.UseCases
 {
-    public static class GetÜberblick
+    public static class GetÜbersicht
     {
         public class Request : IRequest<ÜberblickModel>
         { }
