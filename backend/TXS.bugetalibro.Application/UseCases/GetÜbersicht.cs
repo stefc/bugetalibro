@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -9,7 +10,10 @@ namespace TXS.bugetalibro.Application.UseCases
     public static class GetÜbersicht
     {
         public class Request : IRequest<ÜberblickModel>
-        { }
+        { 
+            public int? Monat { get; set; }
+            public int? Jahr { get; set; }
+        }
 
         internal class Handler : IRequestHandler<Request, ÜberblickModel>
         {
@@ -26,7 +30,11 @@ namespace TXS.bugetalibro.Application.UseCases
             {
                 // using (var scope = this.unitOfWork.Begin())
                 {
-                    var datum = this.dateProvider.Today;
+                    var hasDatum = request.Monat.HasValue && request.Jahr.HasValue; 
+
+                    var datum = hasDatum ? 
+                        new DateTime(request.Jahr.Value, request.Monat.Value, 1) : this.dateProvider.Today;
+                    
                     var überblickModel = new ÜberblickModel() { 
                         Monat = datum.Month, 
                         Jahr = datum.Year 
