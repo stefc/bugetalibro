@@ -21,6 +21,8 @@ namespace TXS.bugetalibro.UnitTests.Application
             Assert.NotNull(response);
             Assert.Equal(0m, response.StartSaldo);
             Assert.Equal(0m, response.EndSaldo);
+            Assert.Equal(12, response.Monat);
+            Assert.Equal(2019, response.Jahr);
         }
     }
 }

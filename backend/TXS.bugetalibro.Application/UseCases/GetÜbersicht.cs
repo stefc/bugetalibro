@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using TXS.bugetalibro.Application.Contracts;
 using TXS.bugetalibro.Application.Models;
 
 namespace TXS.bugetalibro.Application.UseCases
@@ -13,9 +14,11 @@ namespace TXS.bugetalibro.Application.UseCases
         internal class Handler : IRequestHandler<Request, ÜberblickModel>
         {
             //private readonly IUnitOfWork unitOfWork;
+            private readonly IDateProvider dateProvider;
 
-            public Handler(/*IUnitOfWork unitOfWork*/)
+            public Handler(IDateProvider dateProvider /*, IUnitOfWork unitOfWork*/)
             {
+                this.dateProvider = dateProvider;
                // this.unitOfWork = unitOfWork;
             }
 
@@ -23,8 +26,11 @@ namespace TXS.bugetalibro.Application.UseCases
             {
                 // using (var scope = this.unitOfWork.Begin())
                 {
-                    var überblickModel = new ÜberblickModel();
-                    
+                    var datum = this.dateProvider.Today;
+                    var überblickModel = new ÜberblickModel() { 
+                        Monat = datum.Month, 
+                        Jahr = datum.Year 
+                    };
                     return Task.FromResult(überblickModel);
                 }
             }
