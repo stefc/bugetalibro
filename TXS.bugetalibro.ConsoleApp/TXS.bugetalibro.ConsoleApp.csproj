@@ -1,27 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-        <AssemblyName>hb</AssemblyName>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <PackageReference Include="CommandLineParser" Version="2.8.0" />
-      <PackageReference Include="MediatR" Version="8.1.0" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.6" />
-      <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.6" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\backend\TXS.bugetalibro.Application\TXS.bugetalibro.Application.csproj" />
-      <ProjectReference Include="..\backend\TXS.bugetalibro.Infrastructure\TXS.bugetalibro.Infrastructure.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Update="appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>hb</AssemblyName>
+    <UserSecretsId>e04e704d-55fb-4c9a-bbd4-23fd3cac97f5</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="MediatR" Version="8.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="3.1.6" />
+	  <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.6" />
+	
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\backend\TXS.bugetalibro.Application\TXS.bugetalibro.Application.csproj" />
+    <ProjectReference Include="..\backend\TXS.bugetalibro.Infrastructure\TXS.bugetalibro.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

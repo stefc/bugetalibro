@@ -19,8 +19,11 @@ namespace TXS.bugetalibro.Infrastructure.Persistence
         public static DbContextOptionsBuilder Configure(this DbContextOptionsBuilder builder,
             IConfiguration configuration)
         {
+
             var connectionString = configuration.GetConnectionString(Constants.ConnectionStringKeys.Database);
             builder.UseSqlite(connectionString);
+            // IConfigurationSection configSection = configuration.GetSection("CosmosSettings");
+            // builder.UseCosmos(configSection["ServiceEndpoint"], configSection["AuthKey"], configSection["DatabaseName"]);
 
             return builder;
         }

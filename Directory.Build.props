@@ -6,7 +6,6 @@
 
 	<PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
-
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>$(BaseDir)TXS.bugetalibro.snk</AssemblyOriginatorKeyFile>
