@@ -8,6 +8,7 @@ using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.ConsoleApp.Infrastructure;
 using TXS.bugetalibro.Infrastructure;
 using System.IO;
+using System;
 
 namespace TXS.bugetalibro.ConsoleApp
 {
@@ -17,45 +18,24 @@ namespace TXS.bugetalibro.ConsoleApp
         private static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-            await host.Services.GetService<IDataStoreInitializer>().MigrateAsync();
+            using (var scope = host.Services.CreateScope())
+                await scope.ServiceProvider.GetRequiredService<IDataStoreInitializer>().MigrateAsync();
             await host.RunAsync();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-                Host.CreateDefaultBuilder(args)
-                .ConfigureHostConfiguration(configHost =>
-                {
-                    configHost.SetBasePath(Directory.GetCurrentDirectory());
-                    configHost.AddJsonFile("hostsettings.json", optional: true);
-                    configHost.AddEnvironmentVariables(prefix: "PREFIX_");
-                    configHost.AddCommandLine(args);
-                })
-                .ConfigureAppConfiguration((context, configApp) =>
-                {
-                    configApp.AddJsonFile("appsettings.json", optional: true);
-                    configApp.AddJsonFile(
-                        $"appsettings.{context.HostingEnvironment.EnvironmentName}.json",
-                            optional: true);
-                    configApp.AddEnvironmentVariables(prefix: "PREFIX_");
-                    configApp.AddCommandLine(args);
+        public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
+            .ConfigureLogging((context, loggingBuilder) => { }) // Add logging
+            .ConfigureServices((context, services) =>
+            {
+                services.AddLogging()
+                    .AddOptions()
+                    .AddSingleton<CommandLauncher>()
+                    .AddSingleton<IHostedService, CliService>();
 
-                    //if (context.HostingEnvironment.IsDevelopment())
-                    {
-                        configApp.AddUserSecrets("e04e704d-55fb-4c9a-bbd4-23fd3cac97f5");
-                    }
-                })
-                .ConfigureLogging((context, loggingBuilder) => { }) // Add logging
-                .ConfigureServices((context, services) =>
-                {
-
-                    services.AddLogging()
-                        .AddOptions()
-                        .AddSingleton<CommandLauncher>()
-                        .AddSingleton<IHostedService, CliService>();
-
-                    services.AddApplicationServices()
-                        .AddInfrastructureServices();
-                })
-                .UseConsoleLifetime();
+                services
+                    .AddApplicationServices()
+                    .AddInfrastructureServices();
+            })
+            .UseConsoleLifetime();
     }
 }

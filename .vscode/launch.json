@@ -12,9 +12,9 @@
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/TXS.bugetalibro.ConsoleApp/bin/Debug/netcoreapp3.1/hb.dll",
             "args": [
-                "überblick"
+                "übersicht"
             ],
-            "cwd": "${workspaceFolder}/backend/TXS.bugetalibro.UnitTests",
+            "cwd": "${workspaceFolder}/TXS.bugetalibro.ConsoleApp",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false, 

@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/backend/TXS.bugetalibro.UnitTests/TXS.bugetalibro.UnitTests.csproj",
+                "${workspaceFolder}/TXS.bugetalibro.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
