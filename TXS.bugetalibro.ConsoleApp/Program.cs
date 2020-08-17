@@ -34,7 +34,7 @@ namespace TXS.bugetalibro.ConsoleApp
                 {
                     configApp.AddJsonFile("appsettings.json", optional: true);
                     configApp.AddJsonFile(
-                        $"appsettings.{context.HostingEnvironment.EnvironmentName}.json", 
+                        $"appsettings.{context.HostingEnvironment.EnvironmentName}.json",
                             optional: true);
                     configApp.AddEnvironmentVariables(prefix: "PREFIX_");
                     configApp.AddCommandLine(args);
@@ -43,11 +43,11 @@ namespace TXS.bugetalibro.ConsoleApp
                     {
                         configApp.AddUserSecrets("e04e704d-55fb-4c9a-bbd4-23fd3cac97f5");
                     }
-                }) 
+                })
                 .ConfigureLogging((context, loggingBuilder) => { }) // Add logging
                 .ConfigureServices((context, services) =>
                 {
-                    
+
                     services.AddLogging()
                         .AddOptions()
                         .AddSingleton<CommandLauncher>()
@@ -57,6 +57,5 @@ namespace TXS.bugetalibro.ConsoleApp
                         .AddInfrastructureServices();
                 })
                 .UseConsoleLifetime();
-        }
     }
 }
