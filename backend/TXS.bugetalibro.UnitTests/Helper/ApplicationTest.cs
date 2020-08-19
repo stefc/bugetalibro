@@ -1,11 +1,17 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using TXS.bugetalibro.Application;
 using TXS.bugetalibro.Application.Contracts;
+using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.Infrastructure;
+using TXS.bugetalibro.Infrastructure.Persistence;
 
 using Xunit;
 
@@ -24,18 +30,33 @@ namespace TXS.bugetalibro.UnitTests.Helper
 
         async Task IAsyncLifetime.InitializeAsync()
         {
+            // var dict = new Dictionary<string, string>
+            // {
+            //     {"ConnectionStrings:database", "Data Source=:memory:" }
+            // };
+
             this.host = Host.CreateDefaultBuilder()
                 .UseEnvironment(Constants.Environment.Testing)
+                .ConfigureAppConfiguration( (context, config) => {
+  //                  config.AddInMemoryCollection(dict);
+                })
                 .ConfigureServices((context, services) =>
                 {
                     services
                         .AddApplicationServices()
-                        .AddInfrastructureServices()
+                        .AddInfrastructureServices();
+                    
+                    // TODO SB Fluent Extension Method ?
+                    services = services
                         .Replace(ServiceDescriptor.Transient<IDateProvider>(sp => new TestOverrides.DateProvider()));
+                        
                     this.MutateServiceCollection(services);
                 })
                 .Build();
             this.scope = this.host.Services.CreateScope();
+
+            await this.Get<IDataStoreInitializer>().MigrateAsync();
+            
             await this.host.StartAsync();
         }
 
