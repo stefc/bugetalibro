@@ -32,6 +32,18 @@
                 "isDefault": true
             },
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label" : "publish",
+            "command": "dotnet",
+            "type" : "process",
+            "args": [
+                "publish", 
+                "-o","${workspaceFolder}/bin/deploy",
+                "-c","Release", 
+                "-r","osx-x64",
+                "${workspaceFolder}/TXS.bugetalibro.ConsoleApp//TXS.bugetalibro.ConsoleApp.csproj"
+            ]
         }
     ]
 }
