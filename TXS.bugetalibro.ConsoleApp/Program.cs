@@ -19,7 +19,9 @@ namespace TXS.bugetalibro.ConsoleApp
         {
             var host = CreateHostBuilder(args).Build();
             using (var scope = host.Services.CreateScope())
+            {
                 await scope.ServiceProvider.GetRequiredService<IDataStoreInitializer>().MigrateAsync();
+            }
             await host.RunAsync();
         }
 

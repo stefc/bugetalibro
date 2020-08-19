@@ -1,61 +1,51 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Hosting.Internal;
 using TXS.bugetalibro.Application;
 using TXS.bugetalibro.Application.Contracts;
 using TXS.bugetalibro.Infrastructure;
-using TXS.Shared.Helper;
 
 using Xunit;
 
 namespace TXS.bugetalibro.UnitTests.Helper
 {
+    // Basis für Application Tests
     public abstract class ApplicationTest : IAsyncLifetime
     {
-        private static readonly AsyncLock mutex = new AsyncLock();
-        private static readonly IServiceCollection baseServices;
-        private IServiceProvider serviceProvider;
+        private IHost host;
+        private IServiceScope scope;
 
-        protected TService Get<TService>() => this.serviceProvider.GetService<TService>();
+        protected TService Get<TService>() => this.scope.ServiceProvider.GetRequiredService<TService>();
         protected IMediator Mediator => this.Get<IMediator>();
-
-        static ApplicationTest()
-        {
-            var testConfiguration = new ConfigurationBuilder().Build();
-
-            baseServices = new ServiceCollection();
-            baseServices.AddTransient<IHostEnvironment>(sp => new HostingEnvironment
-            {
-                EnvironmentName = Constants.Environment.Testing,
-                ContentRootPath = Environment.CurrentDirectory
-            });
-
-            baseServices.AddTransient<IConfiguration>(sp => testConfiguration);
-            
-            baseServices.AddApplicationServices();
-            baseServices.AddInfrastructureServices();
-            
-            baseServices.Replace(ServiceDescriptor.Transient<IDateProvider>(sp => new TestOverrides.DateProvider()));
-        }
 
         protected ApplicationTest() { }
 
         async Task IAsyncLifetime.InitializeAsync()
         {
-            using (await mutex.LockAsync())
-            {
-                var serviceCollection = new ServiceCollection().Add(baseServices);
-                this.MutateServiceCollection(serviceCollection);
-                this.serviceProvider = serviceCollection.BuildServiceProvider();
-            }
+            this.host = Host.CreateDefaultBuilder()
+                .UseEnvironment(Constants.Environment.Testing)
+                .ConfigureServices((context, services) =>
+                {
+                    services
+                        .AddApplicationServices()
+                        .AddInfrastructureServices()
+                        .Replace(ServiceDescriptor.Transient<IDateProvider>(sp => new TestOverrides.DateProvider()));
+                    this.MutateServiceCollection(services);
+                })
+                .Build();
+            this.scope = this.host.Services.CreateScope();
+            await this.host.StartAsync();
         }
 
-        Task IAsyncLifetime.DisposeAsync() => Task.CompletedTask;
+         Task IAsyncLifetime.DisposeAsync() {
+            this.scope?.Dispose();
+            this.scope=null;
+            this.host?.Dispose();
+            this.host=null;
+            return Task.CompletedTask;
+        }
 
         protected virtual void MutateServiceCollection(IServiceCollection services) { }
     }

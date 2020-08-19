@@ -32,7 +32,7 @@ namespace TXS.bugetalibro.UnitTests.Application
 
             // (A)ction
             var response = await this.Mediator.Send(request);
-            
+
             // (A)ssert
             Assert.NotNull(response);
             Assert.Equal(0m, response.StartSaldo);

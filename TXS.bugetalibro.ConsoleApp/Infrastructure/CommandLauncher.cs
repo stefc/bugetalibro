@@ -8,20 +8,21 @@ using System.Threading.Tasks;
 using CommandLine;
 using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using TXS.bugetalibro.ConsoleApp.Commands;
 
 namespace TXS.bugetalibro.ConsoleApp.Infrastructure
 {
     internal class CommandLauncher
     {
-        private readonly IMediator mediator;
+        private readonly IServiceScopeFactory scopeFactory;
         private readonly Type[] commandTypes;
         private readonly StringWriter helpWriter;
         private readonly Parser commandParser;
 
-        public CommandLauncher(IMediator mediator)
+        public CommandLauncher(IServiceScopeFactory scopeFactory)
         {
-            this.mediator = mediator;
+            this.scopeFactory = scopeFactory;
             this.helpWriter = new StringWriter();
             this.commandTypes = this.GetType().Assembly.GetTypes()
                 .Where(p => p.IsClass && !p.IsNested && p.GetCustomAttributes(typeof(VerbAttribute), false).Any())
@@ -37,10 +38,13 @@ namespace TXS.bugetalibro.ConsoleApp.Infrastructure
         {
             try
             {
-                await this.commandParser
-                    .ParseArguments(args, this.commandTypes)
-                    .WithNotParsed(this.Help)
-                    .WithParsedAsync<BaseCommand>(cmd => cmd.ExecuteAsync(this.mediator, cancellationToken));
+                using (var scope = this.scopeFactory.CreateScope()) {
+                    var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                    await this.commandParser
+                        .ParseArguments(args, this.commandTypes)
+                        .WithNotParsed(this.Help)
+                        .WithParsedAsync<BaseCommand>(cmd => cmd.ExecuteAsync(mediator, cancellationToken));
+                }
             }
             catch (ValidationException e)
             {

@@ -13,6 +13,9 @@
             "program": "${workspaceFolder}/TXS.bugetalibro.ConsoleApp/bin/Debug/netcoreapp3.1/hb.dll",
             "args": [
                 "übersicht"
+                //"einzahlung",
+                //"-d 2018-05-31",
+                //"-b 100.42"
             ],
             "cwd": "${workspaceFolder}/TXS.bugetalibro.ConsoleApp",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console

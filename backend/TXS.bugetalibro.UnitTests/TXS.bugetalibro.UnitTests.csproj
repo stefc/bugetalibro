@@ -27,4 +27,10 @@
 		<ProjectReference Include="..\TXS.bugetalibro.Infrastructure\TXS.bugetalibro.Infrastructure.csproj" />
 	</ItemGroup>
 
+  <ItemGroup>
+    <None Update="appsettings.Testing.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

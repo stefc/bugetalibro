@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using TXS.bugetalibro.Application.Contracts;
+using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.Application.Models;
 
 namespace TXS.bugetalibro.Application.UseCases
@@ -17,15 +18,14 @@ namespace TXS.bugetalibro.Application.UseCases
 
         internal class Handler : IRequestHandler<Request, ÜberblickModel>
         {
-            //private readonly IUnitOfWork unitOfWork;
+            private readonly IDataStore dataStore;
             private readonly IDateProvider dateProvider;
 
-            public Handler(IDateProvider dateProvider /*, IUnitOfWork unitOfWork*/)
+            public Handler(IDateProvider dateProvider, IDataStore dataStore)
             {
                 this.dateProvider = dateProvider;
-               // this.unitOfWork = unitOfWork;
+                this.dataStore = dataStore;
             }
-
             public Task<ÜberblickModel> Handle(Request request, CancellationToken cancellationToken)
             {
                 // using (var scope = this.unitOfWork.Begin())
