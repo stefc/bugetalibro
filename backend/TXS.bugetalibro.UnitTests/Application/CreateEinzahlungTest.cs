@@ -13,6 +13,10 @@ namespace TXS.bugetalibro.UnitTests.Application
 {
     public class CreateEinzahlungTest : ApplicationTest
     {
+        public CreateEinzahlungTest(ApplicationFixture fixture) : base(fixture)
+        {
+        }
+
         [Fact(Skip="TBD")]
         public async Task TestInitial()
         {

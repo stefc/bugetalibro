@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using TXS.bugetalibro.Application;
 using TXS.bugetalibro.Application.UseCases;
 using TXS.bugetalibro.UnitTests.Helper;
@@ -8,6 +9,10 @@ namespace TXS.bugetalibro.UnitTests.Application
 {
     public class GetÜberblickTest : ApplicationTest
     {
+        public GetÜberblickTest(ApplicationFixture fixture) : base(fixture)
+        {
+        }
+
         [Fact]
         public async Task TestInitial()
         {

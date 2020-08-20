@@ -1,4 +1,6 @@
 using System;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using TXS.bugetalibro.Application.Contracts;
 
 namespace TXS.bugetalibro.UnitTests.Helper
@@ -14,5 +16,11 @@ namespace TXS.bugetalibro.UnitTests.Helper
                 this.Today = date ?? new DateTime(2019, 12, 24);
             }
         }
+    }
+
+    public static class OverridesExtensions {
+
+        public static IServiceCollection AddTestDateProvider(this IServiceCollection services)
+            => services.Replace(ServiceDescriptor.Transient<IDateProvider>(sp => new TestOverrides.DateProvider()));
     }
 }
