@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
+using TXS.bugetalibro.Application.Contracts;
 using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.Domain.Entities;
 
@@ -14,21 +15,23 @@ namespace TXS.bugetalibro.Application.UseCases
         public class Request : IRequest<decimal>
         {
             public decimal Betrag { get; set; }
-            public DateTime Datum { get; set; }
+            public DateTime? Datum { get; set; }
         }
 
         internal class Handler : IRequestHandler<Request, decimal>
         {
             private readonly IDataStore dataStore;
+            private readonly IDateProvider dateProvider;
 
-            public Handler(IDataStore dataStore)
+            public Handler(IDataStore dataStore, IDateProvider dateProvider)
             {
                 this.dataStore = dataStore;
+                this.dateProvider = dateProvider;
             }
             
             public async Task<decimal> Handle(Request request, CancellationToken cancellationToken)
             {
-                var einzahlung = new Einzahlung(request.Datum, request.Betrag);
+                var einzahlung = new Einzahlung(request.Datum ?? this.dateProvider.Today, request.Betrag);
                 this.dataStore.Set<Einzahlung>().Insert(einzahlung);
                 await this.dataStore.SaveChangesAsync(cancellationToken);
 
@@ -44,7 +47,6 @@ namespace TXS.bugetalibro.Application.UseCases
             public Validator()
             {
                 this.RuleFor(req => req.Betrag).GreaterThan(0m);
-                this.RuleFor(req => req.Datum).NotEmpty();
             }
         }
     }

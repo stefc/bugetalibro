@@ -17,7 +17,7 @@ namespace TXS.bugetalibro.UnitTests.Application
         {
         }
 
-        [Fact(Skip="TBD")]
+        [Fact]
         public async Task TestInitial()
         {
             // (A)range 
@@ -34,9 +34,11 @@ namespace TXS.bugetalibro.UnitTests.Application
 
             var dataStore = base.Get<IDataStore>();
             Assert.Equal(1, dataStore.Set<Einzahlung>().Count());
+            var row = dataStore.Set<Einzahlung>().Single( record => record.Betrag == 100.50m);
+            Assert.Equal(new DateTime(2010,1,1), row.Datum);
         }
 
-        [Fact(Skip="TBD")]
+        [Fact]
         public async Task TestNoDate()
         {
             // (A)range 
@@ -49,6 +51,10 @@ namespace TXS.bugetalibro.UnitTests.Application
             
             // (A)ssert
             Assert.Equal(100.50m, response);
+             var dataStore = base.Get<IDataStore>();
+            Assert.Equal(1, dataStore.Set<Einzahlung>().Count());
+            var row = dataStore.Set<Einzahlung>().Single( record => record.Betrag == 100.50m);
+            Assert.Equal(new DateTime(2019,12,24), row.Datum);
         }
     }
 }
