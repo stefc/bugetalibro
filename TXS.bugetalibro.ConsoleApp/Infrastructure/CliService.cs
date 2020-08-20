@@ -9,21 +9,23 @@ namespace TXS.bugetalibro.ConsoleApp.Infrastructure
 {
     internal class CliService : BackgroundService
     {
-        private readonly IServiceScopeFactory serviceProvider;
-        private readonly CommandLauncher commandLauncher;
+        private readonly IServiceScopeFactory serviceScopeFactory;
         private readonly IHostApplicationLifetime appLifetime;
 
-        public CliService(IServiceScopeFactory serviceProvider, CommandLauncher commandLauncher, IHostApplicationLifetime appLifetime)
+        public CliService(IServiceScopeFactory serviceScopeFactory, IHostApplicationLifetime appLifetime)
         {
-            this.serviceProvider = serviceProvider;
-            this.commandLauncher = commandLauncher;
+            this.serviceScopeFactory = serviceScopeFactory;
             this.appLifetime = appLifetime;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var commandLineArgs = Environment.GetCommandLineArgs().Skip(1).ToArray();
-            await this.commandLauncher.ExecuteCommandAsync(commandLineArgs, stoppingToken);
+            using (var scope = this.serviceScopeFactory.CreateScope())
+            {
+                var commandLauncher = scope.ServiceProvider.GetRequiredService<CommandLauncher>();
+                await commandLauncher.ExecuteCommandAsync(commandLineArgs, stoppingToken);
+            }
             this.appLifetime.StopApplication();
         }
     }

@@ -31,8 +31,8 @@ namespace TXS.bugetalibro.ConsoleApp
             {
                 services.AddLogging()
                     .AddOptions()
-                    .AddSingleton<CommandLauncher>()
-                    .AddSingleton<IHostedService, CliService>();
+                    .AddTransient<CommandLauncher>()
+                    .AddHostedService<CliService>();
 
                 services
                     .AddApplicationServices()
