@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,7 @@ namespace TXS.bugetalibro.Infrastructure.Persistence
                 .UseLoggerFactory(serviceProvider.GetService<ILoggerFactory>())
                 .EnableSensitiveDataLogging();
         }
+        
 
         public static DbContextOptionsBuilder Configure(this DbContextOptionsBuilder builder,
             IConfiguration configuration)
@@ -22,9 +24,6 @@ namespace TXS.bugetalibro.Infrastructure.Persistence
 
             var connectionString = configuration.GetConnectionString(Constants.ConnectionStringKeys.Database);
             builder.UseSqlite(connectionString);
-            // IConfigurationSection configSection = configuration.GetSection("CosmosSettings");
-            // builder.UseCosmos(configSection["ServiceEndpoint"], configSection["AuthKey"], configSection["DatabaseName"]);
-
             return builder;
         }
     }

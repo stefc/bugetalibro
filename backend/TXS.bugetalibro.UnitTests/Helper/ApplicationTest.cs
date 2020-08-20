@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -33,14 +32,15 @@ namespace TXS.bugetalibro.UnitTests.Helper
             };
 
             var config = new ConfigurationBuilder()
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json").Build();
+                .Build();
             
             this.Services = new ServiceCollection()
                 .AddTransient<IHostEnvironment>( _ => env)
                 .AddTransient<IConfiguration>( _ => config)
                 .AddApplicationServices()
                 .AddInfrastructureServices()
-                .AddTestDateProvider();
+                .AddTestDateProvider()
+                .AddInMemoryDb();
         }
 
         public void Dispose() {}
@@ -49,11 +49,9 @@ namespace TXS.bugetalibro.UnitTests.Helper
     [Collection(nameof(ApplicationFixtureCollection))]
 
     // Basis für Application Tests
-    public abstract class ApplicationTest : IAsyncLifetime, IDisposable
+    public abstract class ApplicationTest : IAsyncLifetime
     {
         private readonly ApplicationFixture fixture; 
-
-        private readonly string dbPath;
 
         private IServiceProvider serviceProvider;
 
@@ -63,26 +61,14 @@ namespace TXS.bugetalibro.UnitTests.Helper
         public ApplicationTest(ApplicationFixture fixture)
         {
             this.fixture = fixture;
-
-            var tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            this.dbPath = Path.ChangeExtension(tempFile, ".db");
-        }
-
-        public void Dispose()
-        {
-            File.Delete(this.dbPath);
         }
 
         async Task IAsyncLifetime.InitializeAsync()
         {
             this.serviceProvider = this.fixture.Services
-                
                 .BuildServiceProvider()
                 .CreateScope()
                 .ServiceProvider;
-
-            var config = this.Get<IConfiguration>();
-            config["ConnectionStrings:database"] = $"Data Source={dbPath}";
 
             await this.Get<IDataStoreInitializer>().MigrateAsync();
         }
@@ -92,12 +78,5 @@ namespace TXS.bugetalibro.UnitTests.Helper
         }
 
         protected virtual void MutateServiceCollection(IServiceCollection services) { }
-
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddApplicationServices();
-
-        }
-
     }
 }

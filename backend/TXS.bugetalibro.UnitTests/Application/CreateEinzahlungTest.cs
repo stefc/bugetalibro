@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using TXS.bugetalibro.Application;
 using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.Application.UseCases;
 using TXS.bugetalibro.Domain.Entities;
 using TXS.bugetalibro.UnitTests.Helper;
-using TXS.bugetalibro.Infrastructure;
 using Xunit;
 
 namespace TXS.bugetalibro.UnitTests.Application
