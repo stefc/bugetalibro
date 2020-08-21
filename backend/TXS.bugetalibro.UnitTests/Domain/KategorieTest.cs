@@ -9,6 +9,7 @@ namespace TXS.bugetalibro.UnitTests.Domain
         [Theory]
         [InlineData(null)]
         [InlineData("")]
+        [Trait("Category","Unit")]
         public void TestInvalid(string code)
         {
             Assert.Throws<ArgumentNullException>(() => new Kategorie(code));

@@ -9,12 +9,15 @@ namespace TXS.bugetalibro.UnitTests.Domain
         [Theory]
         [InlineData(-100)]
         [InlineData(0)]
+        [Trait("Category","Unit")]
+
         public void TestInvalidBetrag(int betrag)
         {
             Assert.Throws<ArgumentOutOfRangeException>(() => new Einzahlung(DateTime.Today, betrag));
         }
 
         [Fact]
+        [Trait("Category","Unit")]
         public void TestCreateEinzahlung()
         {
             var datum = new DateTime(2010, 1, 1);
@@ -26,6 +29,7 @@ namespace TXS.bugetalibro.UnitTests.Domain
         }
 
         [Fact]
+        [Trait("Category","Unit")]
         public void TestInvalidDatum()
         {
             Assert.Throws<ArgumentOutOfRangeException>(() => new Einzahlung(new DateTime(2010, 1, 1, 10, 23, 5), 100m));

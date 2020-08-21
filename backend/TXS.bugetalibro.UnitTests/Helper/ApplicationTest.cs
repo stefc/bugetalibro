@@ -47,6 +47,7 @@ namespace TXS.bugetalibro.UnitTests.Helper
     }
 
     [Collection(nameof(ApplicationFixtureCollection))]
+    [Trait("Category","Integration")]
 
     // Basis für Application Tests
     public abstract class ApplicationTest : IAsyncLifetime
