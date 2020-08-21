@@ -1,7 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TXS.bugetalibro.Application;
+using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.Application.UseCases;
+using TXS.bugetalibro.Domain.Entities;
+using TXS.bugetalibro.Infrastructure.Persistence;
 using TXS.bugetalibro.UnitTests.Helper;
 using Xunit;
 
@@ -44,6 +50,18 @@ namespace TXS.bugetalibro.UnitTests.Application
             Assert.Equal(0m, response.EndSaldo);
             Assert.Equal(2, response.Monat);
             Assert.Equal(2020, response.Jahr);
+        }
+
+        [Fact]
+        public async Task TestFullDb() 
+        {
+            // Arrange
+            await base.UseSampleDb(TestOverrides.SampleDb);
+
+            // Assert 
+            var dataStore = base.Get<IDataStore>();
+            Assert.Equal(3, dataStore.Set<Einzahlung>().Count());
+            // Assert.Equal(343.00m, dataStore.Set<Einzahlung>().Sum( x => x.Betrag));
         }
     }
 }

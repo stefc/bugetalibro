@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.Internal;
 using TXS.bugetalibro.Application;
 using TXS.bugetalibro.Application.Contracts.Data;
+using TXS.bugetalibro.Domain.Entities;
 using TXS.bugetalibro.Infrastructure;
-
+using TXS.bugetalibro.Infrastructure.Persistence;
 using Xunit;
 
 namespace TXS.bugetalibro.UnitTests.Helper
@@ -23,6 +26,8 @@ namespace TXS.bugetalibro.UnitTests.Helper
     {
         public readonly IServiceCollection Services;
 
+        private readonly CancellationTokenSource source = new CancellationTokenSource();
+
         public ApplicationFixture()
         {
             var env = new HostingEnvironment
@@ -33,6 +38,8 @@ namespace TXS.bugetalibro.UnitTests.Helper
 
             var config = new ConfigurationBuilder()
                 .Build();
+
+            this.CreateSampleDb();
             
             this.Services = new ServiceCollection()
                 .AddTransient<IHostEnvironment>( _ => env)
@@ -43,7 +50,32 @@ namespace TXS.bugetalibro.UnitTests.Helper
                 .AddInMemoryDb();
         }
 
-        public void Dispose() {}
+        private void CreateSampleDb() {
+            var services = new ServiceCollection()
+                .AddInfrastructureServices()
+                .AddSampleDb(TestOverrides.SampleDb);
+
+            var sp = services
+                .BuildServiceProvider()
+                .CreateScope()
+                .ServiceProvider;
+            
+            sp.GetRequiredService<IDataStoreInitializer>().MigrateAsync().Wait(100);
+
+            var dataStore = sp.GetRequiredService<IDataStore>();
+            dataStore.Set<Einzahlung>().Insert(new Einzahlung(new DateTime(1968, 12, 24), 100.01m));
+            dataStore.Set<Einzahlung>().Insert(new Einzahlung(new DateTime(2001, 10, 21), 200.99m));
+            dataStore.Set<Einzahlung>().Insert(new Einzahlung(new DateTime(2006, 2, 20),  42.00m));
+
+            dataStore.SaveChangesAsync(this.source.Token).Wait(100);
+        }
+
+       
+            
+
+        public void Dispose() {
+            this.source.Dispose();
+        }
     }
 
     [Collection(nameof(ApplicationFixtureCollection))]
@@ -79,5 +111,13 @@ namespace TXS.bugetalibro.UnitTests.Helper
         }
 
         protected virtual void MutateServiceCollection(IServiceCollection services) { }
+
+        protected async Task UseSampleDb(string path) {
+            var dataStoreContext = this.Get<DataStoreContext>();
+            await dataStoreContext.Database.ExecuteSqlRawAsync($"attach '{TestOverrides.SampleDb}' as source");
+
+            // Todo SB  Alle Tables in der richtigen Order von der persistierten Quelle nach :memory: kopieren
+            await dataStoreContext.Database.ExecuteSqlRawAsync("insert into main.Einzahlung select * from source.Einzahlung");
+        }
     }
 }

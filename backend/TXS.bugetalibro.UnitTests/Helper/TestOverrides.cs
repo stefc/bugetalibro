@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,9 @@ namespace TXS.bugetalibro.UnitTests.Helper
 {
     internal static class TestOverrides
     {
+
+        public const string SampleDb = "sample.db";
+
         public class DateProvider : IDateProvider
         {
             public DateTime Today { get; }
@@ -47,6 +51,13 @@ namespace TXS.bugetalibro.UnitTests.Helper
                 .Replace(ServiceDescriptor.Scoped<IDataStoreInitializer>( 
                     sp => new TestOverrides.DataStoreInitializer(sp.GetRequiredService<DataStoreContext>())));
 
+        public static IServiceCollection AddSampleDb(this IServiceCollection services, string path)
+            => services
+                .Replace(ServiceDescriptor.Scoped<DbContextOptions<DataStoreContext>>( _ => CreateNewSampleDb(path)))
+                .Replace(ServiceDescriptor.Scoped<IDataStoreInitializer>( 
+                    sp => new TestOverrides.DataStoreInitializer(sp.GetRequiredService<DataStoreContext>())));
+
+
 
         private static DbContextOptions<DataStoreContext> CreateInMemoryDb()
         {
@@ -57,6 +68,16 @@ namespace TXS.bugetalibro.UnitTests.Helper
 
             return options;
         }
+
+        private static DbContextOptions<DataStoreContext> CreateNewSampleDb(string path)
+        {
+            File.Delete(path);
+            var connection = new SqliteConnection($"DataSource={path}");
+            connection.Open();
+
+            return new DbContextOptionsBuilder<DataStoreContext>().UseSqlite(connection).Options;
+        }
+
 
     }
 }
