@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk"> 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>hb</AssemblyName>
     <UserSecretsId>e04e704d-55fb-4c9a-bbd4-23fd3cac97f5</UserSecretsId>
-    <PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>
+    <PublishSingleFile Condition="'$(Configuration)' == 'Release' AND '$(GITHUB_ACTIONS)' != 'true'">true</PublishSingleFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
