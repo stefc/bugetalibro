@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
@@ -15,7 +16,11 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
             var request = new GetÜbersicht.Request { };
             var übersicht = await mediator.Send(request, cancellationToken);
 
-            Console.WriteLine("TBD - Ausgabe der Übersicht");
+            var date = new DateTime(übersicht.Jahr, übersicht.Monat, 1);
+            Console.WriteLine(date.ToString("MMMM yyyy"));
+            Console.WriteLine(new String('-',20));
+            Console.WriteLine($"Kassenbestand (Monatsanfang): {übersicht.StartSaldo.ToString("C2", CultureInfo.CreateSpecificCulture("de-DE"))}");
+            Console.WriteLine($"Kassenbestand (Monatsende):   {übersicht.EndSaldo.ToString("C2", CultureInfo.CreateSpecificCulture("de-DE"))}");
         }
     }
 }
