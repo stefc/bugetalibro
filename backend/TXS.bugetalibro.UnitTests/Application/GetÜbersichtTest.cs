@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TXS.bugetalibro.Application;
@@ -13,9 +14,9 @@ using Xunit;
 
 namespace TXS.bugetalibro.UnitTests.Application
 {
-    public class GetÜberblickTest : ApplicationTest
+    public class GetÜbersichtTest : ApplicationTest
     {
-        public GetÜberblickTest(ApplicationFixture fixture) : base(fixture)
+        public GetÜbersichtTest(ApplicationFixture fixture) : base(fixture)
         {
         }
 
@@ -81,6 +82,24 @@ namespace TXS.bugetalibro.UnitTests.Application
             // Assert 
             Assert.Equal(expectedStart, response.StartSaldo);
             Assert.Equal(expectedEnd, response.EndSaldo);
+        }
+
+        [Theory]
+        [InlineData(1, 2020, null)]
+        [InlineData(1, null, 4)]
+        [InlineData(1, 2020, 0)]
+        [InlineData(1, 2020, 13)]
+        public async Task TestValidate(int expected, int? year, int? month)
+        {
+            // (A)range 
+            var request = new GetÜbersicht.Request() { Jahr = year, Monat = month };
+
+            // (A)ction
+            var exception = await Assert.ThrowsAsync<ValidationException>(
+                () => this.Mediator.Send(request));
+
+            // (A)ssert
+            Assert.Equal(expected, exception.Errors.Count());
         }
     }
 }
