@@ -59,6 +59,8 @@ namespace TXS.bugetalibro.UnitTests.Application
         [Theory]
         [InlineData(1, -100.0)]
         [InlineData(1, 0.0)]
+        [InlineData(1, 10.123)]
+        [InlineData(1, 100_000_000.00)]
         public async Task TestValidate(int expected, decimal betrag)
         {
             // (A)range 

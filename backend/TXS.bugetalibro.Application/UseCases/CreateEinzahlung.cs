@@ -46,7 +46,8 @@ namespace TXS.bugetalibro.Application.UseCases
         {
             public Validator()
             {
-                this.RuleFor(req => req.Betrag).GreaterThan(0m);
+                this.RuleFor(x => x.Betrag).GreaterThan(0m);
+                this.RuleFor(x => x.Betrag).ScalePrecision(2, 10);
             }
         }
     }

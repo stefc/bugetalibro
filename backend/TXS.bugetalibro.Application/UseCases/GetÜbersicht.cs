@@ -48,7 +48,7 @@ namespace TXS.bugetalibro.Application.UseCases
                 var endSaldo = startSaldo + this.dataStore.Set<Einzahlung>()
                     .Where(e => e.Datum <= dateRange.end && e.Datum >= dateRange.start).Sum(e => e.Betrag);
 
-                return Task.FromResult(ToViewModel((datumStart, startSaldo, startSaldo + endSaldo)));
+                return Task.FromResult(ToViewModel((datumStart, startSaldo, endSaldo)));
             }
 
             private ÜberblickModel ToViewModel( (LocalDate datumStart, decimal startSaldo, decimal endSaldo) model) {
