@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
+using Xunit;
 using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.Application.UseCases;
 using TXS.bugetalibro.Domain.Entities;
 using TXS.bugetalibro.UnitTests.Helper;
-using Xunit;
 
 namespace TXS.bugetalibro.UnitTests.Application
 {
@@ -53,6 +54,36 @@ namespace TXS.bugetalibro.UnitTests.Application
             Assert.Equal(1, dataStore.Set<Einzahlung>().Count());
             var row = dataStore.Set<Einzahlung>().Single( record => record.Betrag == 100.50m);
             Assert.Equal(new DateTime(2019,12,24), row.Datum);
+        }
+
+        [Fact]
+        public async Task TestNegativeAmount()
+        {
+            // (A)range 
+            var request = new CreateEinzahlung.Request() {
+                Betrag = -100m
+            };
+
+            // (A)ction
+            var ex = await Assert.ThrowsAsync<ValidationException>(() => this.Mediator.Send(request));
+
+            // (A)ssert
+            Assert.Single(ex.Errors);
+        }
+
+        [Fact]
+        public async Task TestZeroAmount()
+        {
+            // (A)range 
+            var request = new CreateEinzahlung.Request() {
+                Betrag = 0m
+            };
+
+            // (A)ction
+            var ex = await Assert.ThrowsAsync<ValidationException>(() => this.Mediator.Send(request));
+
+            // (A)ssert
+            Assert.Single(ex.Errors);
         }
     }
 }
