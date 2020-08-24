@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
-using NodaTime;
 using TXS.bugetalibro.Application.Contracts;
 using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.Application.Models;
@@ -33,26 +32,30 @@ namespace TXS.bugetalibro.Application.UseCases
             }
             public Task<ÜberblickModel> Handle(Request request, CancellationToken cancellationToken)
             {
-                var hasDatum = request.Monat.HasValue && request.Jahr.HasValue;
+                var datumStart = GetDatumStart(request);
 
-                var datumStart = hasDatum ?
-                    new LocalDate(request.Jahr.Value, request.Monat.Value, 1)
-                    :
-                    new LocalDate(this.dateProvider.Today.Year, this.dateProvider.Today.Month, 1);
-
-                (DateTime start, DateTime end) dateRange = (datumStart.ToDateTimeUnspecified(),
-                    datumStart.PlusMonths(1).PlusDays(-1).ToDateTimeUnspecified());
+                var dateRange = GetDatumRange(datumStart);
 
                 var startSaldo = this.balanceQueryFacade.GetBalanceAt(dateRange.start);
                 var endSaldo = this.balanceQueryFacade.GetBalanceAt(dateRange.end);
-
                 var credits = this.balanceQueryFacade.GetCredits(dateRange);
 
                 return Task.FromResult(ToViewModel((datumStart, startSaldo, endSaldo, credits)));
             }
 
+            private DateTime GetDatumStart(Request request)
+            {
+                var hasDatum = request.Monat.HasValue && request.Jahr.HasValue;
+                return hasDatum ?
+                    new DateTime(request.Jahr.Value, request.Monat.Value, 1) :
+                    this.dateProvider.Today.BeginOfMonth();
+            }
+
+            private (DateTime start, DateTime end) GetDatumRange(DateTime date)
+            => (date.BeginOfMonth(), date.EndOfMonth());
+
             private ÜberblickModel ToViewModel(
-                (LocalDate datumStart, decimal startSaldo, decimal endSaldo, decimal credits) model)
+                (DateTime datumStart, decimal startSaldo, decimal endSaldo, decimal credits) model)
             {
                 return new ÜberblickModel()
                 {
@@ -76,5 +79,14 @@ namespace TXS.bugetalibro.Application.UseCases
                 this.RuleFor(req => req.Monat).InclusiveBetween(1, 12);
             }
         }
+    }
+
+    public static class DateTimeExtensions
+    {
+        public static DateTime BeginOfMonth(this DateTime date)
+        => new DateTime(date.Year, date.Month, 1);
+
+        public static DateTime EndOfMonth(this DateTime date)
+        => new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
     }
 }
