@@ -63,5 +63,24 @@ namespace TXS.bugetalibro.UnitTests.Application
             Assert.Equal(3, dataStore.Set<Einzahlung>().Count());
             // Assert.Equal(343.00m, dataStore.Set<Einzahlung>().Sum( x => x.Betrag));
         }
+
+        [Theory]
+        [InlineData(11,1968, 0, 0)]
+        [InlineData(12,1968, 0, 100.01)]
+        [InlineData( 1,1969, 100.01, 100.01)]
+        [InlineData( 2,2006, 301.00, 343.00)]
+        public async Task TestSaldoAt(int month, int year, decimal expectedStart, decimal expectedEnd)
+        {
+            // Arrange
+            await base.UseSampleDb(TestOverrides.SampleDb);
+            var request = new GetÜbersicht.Request() { Monat = month, Jahr = year };
+
+            // (A)ction
+            var response = await this.Mediator.Send(request);
+
+            // Assert 
+            Assert.Equal(expectedStart, response.StartSaldo);
+            Assert.Equal(expectedEnd, response.EndSaldo);
+        }
     }
 }

@@ -1,10 +1,13 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using NodaTime;
 using TXS.bugetalibro.Application.Contracts;
 using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.Application.Models;
+using TXS.bugetalibro.Domain.Entities;
 
 namespace TXS.bugetalibro.Application.UseCases
 {
@@ -28,19 +31,30 @@ namespace TXS.bugetalibro.Application.UseCases
             }
             public Task<ÜberblickModel> Handle(Request request, CancellationToken cancellationToken)
             {
-                // using (var scope = this.unitOfWork.Begin())
-                {
-                    var hasDatum = request.Monat.HasValue && request.Jahr.HasValue; 
+                var hasDatum = request.Monat.HasValue && request.Jahr.HasValue; 
 
-                    var datum = hasDatum ? 
-                        new DateTime(request.Jahr.Value, request.Monat.Value, 1) : this.dateProvider.Today;
+                var datumStart = hasDatum ? 
+                    new LocalDate(request.Jahr.Value, request.Monat.Value, 1) 
+                    : 
+                    new LocalDate(this.dateProvider.Today.Year, this.dateProvider.Today.Month, 1);
+
+                (DateTime start, DateTime end) dateRange = (datumStart.ToDateTimeUnspecified(), 
+                    datumStart.PlusMonths(1).PlusDays(-1).ToDateTimeUnspecified());
+
+                var startSaldo =  this.dataStore.Set<Einzahlung>()
+                    .Where(e => e.Datum < dateRange.start).Sum(e => e.Betrag); 
                     
-                    var überblickModel = new ÜberblickModel() { 
-                        Monat = datum.Month, 
-                        Jahr = datum.Year 
-                    };
-                    return Task.FromResult(überblickModel);
-                }
+                var endSaldo =  this.dataStore.Set<Einzahlung>()
+                    .Where(e => e.Datum <= dateRange.end && e.Datum >= dateRange.start).Sum(e => e.Betrag);
+
+                var überblickModel = new ÜberblickModel() { 
+                    Monat = datumStart.Month, 
+                    Jahr = datumStart.Year, 
+
+                    StartSaldo = startSaldo,
+                    EndSaldo = startSaldo + endSaldo
+                };
+                return Task.FromResult(überblickModel);
             }
         }
     }
