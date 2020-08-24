@@ -56,34 +56,22 @@ namespace TXS.bugetalibro.UnitTests.Application
             Assert.Equal(new DateTime(2019,12,24), row.Datum);
         }
 
-        [Fact]
-        public async Task TestNegativeAmount()
+        [Theory]
+        [InlineData(1, -100.0)]
+        [InlineData(1, 0.0)]
+        public async Task TestValidate(int expected, decimal betrag)
         {
             // (A)range 
-            var request = new CreateEinzahlung.Request() {
-                Betrag = -100m
+            var request = new CreateEinzahlung.Request {
+                Betrag = betrag
             };
-
+            
             // (A)ction
-            var ex = await Assert.ThrowsAsync<ValidationException>(() => this.Mediator.Send(request));
-
+            var exception = await Assert.ThrowsAsync<ValidationException>(
+                () => this.Mediator.Send(request));
+            
             // (A)ssert
-            Assert.Single(ex.Errors);
-        }
-
-        [Fact]
-        public async Task TestZeroAmount()
-        {
-            // (A)range 
-            var request = new CreateEinzahlung.Request() {
-                Betrag = 0m
-            };
-
-            // (A)ction
-            var ex = await Assert.ThrowsAsync<ValidationException>(() => this.Mediator.Send(request));
-
-            // (A)ssert
-            Assert.Single(ex.Errors);
+            Assert.Equal(expected, exception.Errors.Count());
         }
     }
 }
