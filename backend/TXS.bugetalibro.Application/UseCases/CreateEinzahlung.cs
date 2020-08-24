@@ -7,6 +7,7 @@ using MediatR;
 using TXS.bugetalibro.Application.Contracts;
 using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.Domain.Entities;
+using TXS.bugetalibro.Domain.Facades;
 
 namespace TXS.bugetalibro.Application.UseCases
 {
@@ -23,22 +24,22 @@ namespace TXS.bugetalibro.Application.UseCases
             private readonly IDataStore dataStore;
             private readonly IDateProvider dateProvider;
 
-            public Handler(IDataStore dataStore, IDateProvider dateProvider)
+            private readonly BalanceQueryFacade balanceQueryFacade;
+
+            public Handler(IDataStore dataStore, IDateProvider dateProvider, BalanceQueryFacade balanceQueryFacade)
             {
                 this.dataStore = dataStore;
                 this.dateProvider = dateProvider;
+                this.balanceQueryFacade = balanceQueryFacade;
             }
             
             public async Task<decimal> Handle(Request request, CancellationToken cancellationToken)
             {
-                var einzahlung = new Einzahlung(request.Datum ?? this.dateProvider.Today, request.Betrag);
+                var datum = request.Datum ?? this.dateProvider.Today;
+                var einzahlung = new Einzahlung(datum, request.Betrag);
                 this.dataStore.Set<Einzahlung>().Insert(einzahlung);
                 await this.dataStore.SaveChangesAsync(cancellationToken);
-
-                var sumEinzahlungen = this.dataStore.Set<Einzahlung>().Sum(e => e.Betrag);
-                var sumAuszahlungen = this.dataStore.Set<Auszahlung>().Sum(e => e.Betrag);
-
-                return sumEinzahlungen - sumAuszahlungen;
+                return this.balanceQueryFacade.GetBalanceAt(datum.AddDays(+1));
             }
         }
 

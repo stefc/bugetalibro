@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
@@ -8,7 +7,7 @@ using NodaTime;
 using TXS.bugetalibro.Application.Contracts;
 using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.Application.Models;
-using TXS.bugetalibro.Domain.Entities;
+using TXS.bugetalibro.Domain.Facades;
 
 namespace TXS.bugetalibro.Application.UseCases
 {
@@ -24,11 +23,13 @@ namespace TXS.bugetalibro.Application.UseCases
         {
             private readonly IDataStore dataStore;
             private readonly IDateProvider dateProvider;
+            private readonly BalanceQueryFacade balanceQueryFacade;
 
-            public Handler(IDateProvider dateProvider, IDataStore dataStore)
+            public Handler(IDateProvider dateProvider, IDataStore dataStore, BalanceQueryFacade balanceQueryFacade)
             {
                 this.dateProvider = dateProvider;
                 this.dataStore = dataStore;
+                this.balanceQueryFacade = balanceQueryFacade;
             }
             public Task<ÜberblickModel> Handle(Request request, CancellationToken cancellationToken)
             {
@@ -42,11 +43,8 @@ namespace TXS.bugetalibro.Application.UseCases
                 (DateTime start, DateTime end) dateRange = (datumStart.ToDateTimeUnspecified(),
                     datumStart.PlusMonths(1).PlusDays(-1).ToDateTimeUnspecified());
 
-                var startSaldo = this.dataStore.Set<Einzahlung>()
-                    .Where(e => e.Datum < dateRange.start).Sum(e => e.Betrag);
-
-                var endSaldo = startSaldo + this.dataStore.Set<Einzahlung>()
-                    .Where(e => e.Datum <= dateRange.end && e.Datum >= dateRange.start).Sum(e => e.Betrag);
+                var startSaldo = this.balanceQueryFacade.GetBalanceAt(dateRange.start);
+                var endSaldo = this.balanceQueryFacade.GetBalanceAt(dateRange.end);
 
                 return Task.FromResult(ToViewModel((datumStart, startSaldo, endSaldo)));
             }
