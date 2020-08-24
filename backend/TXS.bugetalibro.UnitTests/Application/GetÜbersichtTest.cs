@@ -66,11 +66,11 @@ namespace TXS.bugetalibro.UnitTests.Application
         }
 
         [Theory]
-        [InlineData(11,1968, 0, 0)]
-        [InlineData(12,1968, 0, 100.01)]
-        [InlineData( 1,1969, 100.01, 100.01)]
-        [InlineData( 2,2006, 301.00, 343.00)]
-        public async Task TestSaldoAt(int month, int year, decimal expectedStart, decimal expectedEnd)
+        [InlineData(11,1968, 0, 0, 0)]
+        [InlineData(12,1968, 0, 100.01, 100.01)]
+        [InlineData( 1,1969, 100.01, 100.01, 0.0)]
+        [InlineData( 2,2006, 301.00, 343.00, 42.00)]
+        public async Task TestSaldoAt(int month, int year, decimal expectedStart, decimal expectedEnd, decimal expCredits)
         {
             // Arrange
             await base.UseSampleDb(TestOverrides.SampleDb);
@@ -82,6 +82,7 @@ namespace TXS.bugetalibro.UnitTests.Application
             // Assert 
             Assert.Equal(expectedStart, response.StartSaldo);
             Assert.Equal(expectedEnd, response.EndSaldo);
+            Assert.Equal(expCredits, response.SummeEinzahlungen);
         }
 
         [Theory]

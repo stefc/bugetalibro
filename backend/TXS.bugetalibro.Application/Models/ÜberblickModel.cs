@@ -6,5 +6,6 @@ namespace TXS.bugetalibro.Application.Models
         public int Jahr { get; set; }
         public decimal StartSaldo { get; set; }
         public decimal EndSaldo { get; set; }
+        public decimal SummeEinzahlungen { get; set; }
     }
 }

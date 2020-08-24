@@ -46,16 +46,23 @@ namespace TXS.bugetalibro.Application.UseCases
                 var startSaldo = this.balanceQueryFacade.GetBalanceAt(dateRange.start);
                 var endSaldo = this.balanceQueryFacade.GetBalanceAt(dateRange.end);
 
-                return Task.FromResult(ToViewModel((datumStart, startSaldo, endSaldo)));
+                var credits = this.balanceQueryFacade.GetCredits(dateRange);
+
+                return Task.FromResult(ToViewModel((datumStart, startSaldo, endSaldo, credits)));
             }
 
-            private ÜberblickModel ToViewModel( (LocalDate datumStart, decimal startSaldo, decimal endSaldo) model) {
-                  return new ÜberblickModel() {
+            private ÜberblickModel ToViewModel(
+                (LocalDate datumStart, decimal startSaldo, decimal endSaldo, decimal credits) model)
+            {
+                return new ÜberblickModel()
+                {
                     Monat = model.datumStart.Month,
                     Jahr = model.datumStart.Year,
 
                     StartSaldo = model.startSaldo,
-                    EndSaldo =  model.endSaldo
+                    EndSaldo = model.endSaldo,
+
+                    SummeEinzahlungen = model.credits
                 };
             }
         }

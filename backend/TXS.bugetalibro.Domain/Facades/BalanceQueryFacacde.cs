@@ -17,6 +17,10 @@ namespace TXS.bugetalibro.Domain.Facades
         
         public decimal GetBalanceAt(DateTime date)
             => this.einzahlungen.Where( x => x.Datum < date ).Sum( x => x.Betrag) 
-            -  this.auszahlungen.Where( x => x.Datum < date ).Sum( x => x.Betrag); 
+            -  this.auszahlungen.Where( x => x.Datum < date ).Sum( x => x.Betrag);
+
+
+        public decimal GetCredits((DateTime start, DateTime end) range)
+            => this.einzahlungen.Where( x => (x.Datum >= range.start) && (x.Datum <= range.end)).Sum( x => x.Betrag);
     }
 }
