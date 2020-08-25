@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,10 @@ namespace TXS.bugetalibro.ConsoleApp.Infrastructure
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            CultureInfo provider = CultureInfo.CreateSpecificCulture("de-DE");
+            provider.NumberFormat.CurrencySymbol = "EUR";
+            CultureInfo.CurrentCulture = provider;
+
             var commandLineArgs = Environment.GetCommandLineArgs().Skip(1).ToArray();
             using (var scope = this.serviceScopeFactory.CreateScope())
             {

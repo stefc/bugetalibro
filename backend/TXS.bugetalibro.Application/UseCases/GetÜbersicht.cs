@@ -6,6 +6,7 @@ using MediatR;
 using TXS.bugetalibro.Application.Contracts;
 using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.Application.Models;
+using TXS.bugetalibro.Domain;
 using TXS.bugetalibro.Domain.Entities;
 using TXS.bugetalibro.Domain.Logic;
 
@@ -74,18 +75,5 @@ namespace TXS.bugetalibro.Application.UseCases
                 this.RuleFor(req => req.Monat).InclusiveBetween(1, 12);
             }
         }
-    }
-
-    public static class DateTimeExtensions
-    {
-        public static DateTime BeginOfMonth(this DateTime date)
-        => new DateTime(date.Year, date.Month, 1);
-
-        public static DateTime EndOfMonth(this DateTime date)
-        => new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
-
-        public static (DateTime start, DateTime end) GetMonthRange(this DateTime date)
-        => (date.BeginOfMonth(), date.EndOfMonth());
-
     }
 }
