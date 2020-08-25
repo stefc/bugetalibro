@@ -11,10 +11,11 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
     [Verb("übersicht", HelpText = "Hilfe Text zur Übersicht")]
     public class ÜbersichtCommand : BaseCommand
     {
-        [Option('m', "monat", HelpText = "Monat")]
+        [Value(0, MetaName = "monat", HelpText = "Monat", Required = false)]
+        
         public int? Monat { get; set; }
 
-        [Option('j', "jahr", HelpText = "Jahr")]
+        [Value(1, MetaName = "jahr", HelpText = "Jahr", Required = false)]
         public int? Jahr { get; set; }
 
         internal override async Task ExecuteAsync(IMediator mediator, CancellationToken cancellationToken)

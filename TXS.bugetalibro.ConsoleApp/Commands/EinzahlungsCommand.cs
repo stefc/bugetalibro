@@ -14,7 +14,7 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
             HelpText = "Einzahlungsdatum (format yyyy-MM-dd z.B.: --datum=2018-05-31 oder -d 2018-05-31")]
         public DateTime? Datum { get; set; }
 
-        [Option('b', "betrag", HelpText = "Betrag der eingezahlt werden soll.")]
+        [Value(0, MetaName = "betrag", HelpText = "Betrag der eingezahlt werden soll.", Required = true)]
         public decimal Betrag { get; set; }
 
         internal override async Task ExecuteAsync(IMediator mediator, CancellationToken cancellationToken)
