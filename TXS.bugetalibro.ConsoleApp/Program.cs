@@ -1,14 +1,10 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration.UserSecrets;
 using TXS.bugetalibro.Application;
 using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.ConsoleApp.Infrastructure;
 using TXS.bugetalibro.Infrastructure;
-using System.IO;
-using System;
 
 namespace TXS.bugetalibro.ConsoleApp
 {
@@ -32,9 +28,7 @@ namespace TXS.bugetalibro.ConsoleApp
                 services.AddLogging()
                     .AddOptions()
                     .AddTransient<CommandLauncher>()
-                    .AddHostedService<CliService>();
-
-                services
+                    .AddHostedService<CliService>()
                     .AddApplicationServices()
                     .AddInfrastructureServices();
             })

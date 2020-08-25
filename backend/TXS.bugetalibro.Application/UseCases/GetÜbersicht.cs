@@ -6,7 +6,8 @@ using MediatR;
 using TXS.bugetalibro.Application.Contracts;
 using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.Application.Models;
-using TXS.bugetalibro.Domain.Facades;
+using TXS.bugetalibro.Domain.Entities;
+using TXS.bugetalibro.Domain.Logic;
 
 namespace TXS.bugetalibro.Application.UseCases
 {
@@ -22,25 +23,21 @@ namespace TXS.bugetalibro.Application.UseCases
         {
             private readonly IDataStore dataStore;
             private readonly IDateProvider dateProvider;
-            private readonly BalanceQueryFacade balanceQueryFacade;
 
-            public Handler(IDateProvider dateProvider, IDataStore dataStore, BalanceQueryFacade balanceQueryFacade)
+            public Handler(IDateProvider dateProvider, IDataStore dataStore)
             {
                 this.dateProvider = dateProvider;
                 this.dataStore = dataStore;
-                this.balanceQueryFacade = balanceQueryFacade;
             }
             public Task<ÜberblickModel> Handle(Request request, CancellationToken cancellationToken)
             {
-                var datumStart = GetDatumStart(request);
+                var dateRange =GetDatumStart(request).GetMonthRange();
 
-                var dateRange = GetDatumRange(datumStart);
+                var einzahlungen = this.dataStore.Set<Einzahlung>();
+                var auszahlungen = this.dataStore.Set<Auszahlung>();
+                var balanceQueryFacade = new BalanceQueryFacade(einzahlungen, auszahlungen);
 
-                var startSaldo = this.balanceQueryFacade.GetBalanceAt(dateRange.start);
-                var endSaldo = this.balanceQueryFacade.GetBalanceAt(dateRange.end);
-                var credits = this.balanceQueryFacade.GetCredits(dateRange);
-
-                return Task.FromResult(ToViewModel((datumStart, startSaldo, endSaldo, credits)));
+                return Task.FromResult(ToViewModel(dateRange, balanceQueryFacade));
             }
 
             private DateTime GetDatumStart(Request request)
@@ -51,21 +48,19 @@ namespace TXS.bugetalibro.Application.UseCases
                     this.dateProvider.Today.BeginOfMonth();
             }
 
-            private (DateTime start, DateTime end) GetDatumRange(DateTime date)
-            => (date.BeginOfMonth(), date.EndOfMonth());
-
+            
             private ÜberblickModel ToViewModel(
-                (DateTime datumStart, decimal startSaldo, decimal endSaldo, decimal credits) model)
+                (DateTime start, DateTime end) dateRange, BalanceQueryFacade balanceQueryFacade)
             {
                 return new ÜberblickModel()
                 {
-                    Monat = model.datumStart.Month,
-                    Jahr = model.datumStart.Year,
+                    Monat = dateRange.start.Month,
+                    Jahr = dateRange.start.Year,
 
-                    StartSaldo = model.startSaldo,
-                    EndSaldo = model.endSaldo,
+                    StartSaldo = balanceQueryFacade.GetBalanceAt(dateRange.start),
+                    EndSaldo = balanceQueryFacade.GetBalanceAt(dateRange.end),
 
-                    SummeEinzahlungen = model.credits
+                    SummeEinzahlungen = balanceQueryFacade.GetCredits(dateRange)
                 };
             }
         }
@@ -88,5 +83,9 @@ namespace TXS.bugetalibro.Application.UseCases
 
         public static DateTime EndOfMonth(this DateTime date)
         => new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
+
+        public static (DateTime start, DateTime end) GetMonthRange(this DateTime date)
+        => (date.BeginOfMonth(), date.EndOfMonth());
+
     }
 }

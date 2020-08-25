@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using TXS.bugetalibro.Domain.Entities;
 
-namespace TXS.bugetalibro.Domain.Facades
+namespace TXS.bugetalibro.Domain.Logic
 {
     public class BalanceQueryFacade
     {

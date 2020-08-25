@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using CommandLine;
 using FluentValidation;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using TXS.bugetalibro.ConsoleApp.Commands;
 
 namespace TXS.bugetalibro.ConsoleApp.Infrastructure
