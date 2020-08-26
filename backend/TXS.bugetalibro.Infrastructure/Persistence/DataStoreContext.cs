@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using TXS.bugetalibro.Application.Contracts.Data;
+using TXS.Shared.Extensions;
 
 namespace TXS.bugetalibro.Infrastructure.Persistence
 {
@@ -16,7 +17,19 @@ namespace TXS.bugetalibro.Infrastructure.Persistence
         { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-            => modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataStoreContext).Assembly);
+        {
+            modelBuilder
+                .ApplyConfigurationsFromAssembly(typeof(DataStoreContext).Assembly)
+                // Sqlite unterstützt als Fließkommatyp nur double, deswegen werden alle
+                // decimal Properties Richtung Sqlite zu double konvertiert.
+                .Model.GetEntityTypes()
+                    .SelectMany(entityType => entityType.ClrType.GetProperties()
+                        .Where(prop => prop.PropertyType == typeof(decimal))
+                        .Select(prop => new {ModelName = entityType.Name, PropertyName = prop.Name}))
+                    .ForEach(entityProperty =>
+                        modelBuilder.Entity(entityProperty.ModelName).Property(entityProperty.PropertyName)
+                            .HasConversion<double>());
+        }  
 
         IDataSet<T> IDataStore.Set<T>() => new SetDecorator<T>(this);
         
