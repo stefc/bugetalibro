@@ -25,14 +25,14 @@ namespace TXS.bugetalibro.Infrastructure.Persistence
                 .Model.GetEntityTypes()
                     .SelectMany(entityType => entityType.ClrType.GetProperties()
                         .Where(prop => prop.PropertyType == typeof(decimal))
-                        .Select(prop => new {ModelName = entityType.Name, PropertyName = prop.Name}))
+                        .Select(prop => new { ModelName = entityType.Name, PropertyName = prop.Name }))
                     .ForEach(entityProperty =>
                         modelBuilder.Entity(entityProperty.ModelName).Property(entityProperty.PropertyName)
                             .HasConversion<double>());
-        }  
+        }
 
         IDataSet<T> IDataStore.Set<T>() => new SetDecorator<T>(this);
-        
+
         private class SetDecorator<T> : IDataSet<T>
             where T : class
         {
