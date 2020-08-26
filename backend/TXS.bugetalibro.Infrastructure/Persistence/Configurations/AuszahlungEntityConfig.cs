@@ -9,12 +9,12 @@ namespace TXS.bugetalibro.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Auszahlung> builder)
         {
             builder.HasKey(e => e.Id);
-            
+
             builder.Property(e => e.Betrag).HasConversion<decimal>().IsRequired();
             builder.Property(e => e.Datum).IsRequired();
             builder.Property(e => e.Notiz);
-            
-            builder.HasOne<Kategorie>().WithMany().HasForeignKey("KategorieId").IsRequired();
+
+            builder.HasOne<Kategorie>().WithMany().HasForeignKey("KategorieId").IsRequired().OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using TXS.Shared;
 
 namespace TXS.bugetalibro.Domain.Entities
 {
