@@ -1,5 +1,5 @@
 using System;
-using TXS.bugetalibro.Domain.ValueObjects;
+using TXS.bugetalibro.Domain.Entities;
 using Xunit;
 
 namespace TXS.bugetalibro.UnitTests.Domain

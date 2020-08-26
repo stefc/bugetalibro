@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using TXS.Shared;
 
-namespace TXS.bugetalibro.Domain.ValueObjects
+namespace TXS.bugetalibro.Domain.Entities
 {
-    public class Kategorie : ValueObject<Kategorie>
+    public class Kategorie 
     {
+        protected Kategorie() {}
         public Kategorie(string name)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
+            
+            this.Id = Guid.NewGuid();
             this.Name = name;
         }
 
-        public string Name { get; }
+        public Guid Id { get; }
 
-        protected override IEnumerable<object> GetAtomicValues()
-        {
-            yield return this.Name;
-        }
+        public string Name { get; }
     }
 }

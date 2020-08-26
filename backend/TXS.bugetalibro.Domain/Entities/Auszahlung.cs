@@ -1,5 +1,4 @@
 ﻿using System;
-using TXS.bugetalibro.Domain.ValueObjects;
 
 namespace TXS.bugetalibro.Domain.Entities
 {
