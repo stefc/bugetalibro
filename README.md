@@ -13,4 +13,14 @@ dotnet tool install --global dotnet-ef --version 3.1.7
 dotnet tool update --global dotnet-ef --version 3.1.7
 ```
 
-bugetalibro\backend\TXS.bugetalibro.Infrastructure> dotnet ef migrations add !NameDerMigration! --startup-project ..\..\TXS.bugetalibro.ConsoleApp\ -o Persistence/Migrations
+Migrations Befehle 
+
+```
+cd backend/TXS.bugetalibro.Infrastructure
+dotnet ef migrations list --startup-project ../../TXS.bugetalibro.ConsoleApp
+```
+
+
+```
+dotnet ef migrations add <name> --startup-project ../../TXS.bugetalibro.ConsoleApp/ -o Persistence/Migrations
+```

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TXS.bugetalibro.Infrastructure.Persistence;
 
 namespace TXS.bugetalibro.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DataStoreContext))]
-    partial class DataStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20200826160205_ref_kategorie")]
+    partial class ref_kategorie
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

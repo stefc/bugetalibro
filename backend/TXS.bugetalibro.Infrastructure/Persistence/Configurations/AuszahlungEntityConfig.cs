@@ -10,11 +10,11 @@ namespace TXS.bugetalibro.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(e => e.Id);
             
-            builder.Property(e => e.Betrag).HasConversion<double>().IsRequired();
+            builder.Property(e => e.Betrag).HasConversion<decimal>().IsRequired();
             builder.Property(e => e.Datum).IsRequired();
             builder.Property(e => e.Notiz);
             
-            //builder.HasOne<Kategorie>().WithMany().HasForeignKey("KategorieId").IsRequired();
+            builder.HasOne<Kategorie>().WithMany().HasForeignKey("KategorieId").IsRequired();
         }
     }
 }

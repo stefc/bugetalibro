@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TXS.bugetalibro.Infrastructure.Persistence;
 
 namespace TXS.bugetalibro.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DataStoreContext))]
-    partial class DataStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20200826155724_kategorien")]
+    partial class kategorien
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,15 +30,10 @@ namespace TXS.bugetalibro.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("Datum")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("KategorieId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Notiz")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("KategorieId");
 
                     b.ToTable("Auszahlung");
                 });
@@ -71,15 +68,6 @@ namespace TXS.bugetalibro.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Kategorie");
-                });
-
-            modelBuilder.Entity("TXS.bugetalibro.Domain.Entities.Auszahlung", b =>
-                {
-                    b.HasOne("TXS.bugetalibro.Domain.Entities.Kategorie", null)
-                        .WithMany()
-                        .HasForeignKey("KategorieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
