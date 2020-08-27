@@ -12,10 +12,10 @@
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/TXS.bugetalibro.ConsoleApp/bin/Debug/netcoreapp3.1/hb.dll",
             "args": [
-                //"übersicht","8","2020"
-                "einzahlung",
+                "übersicht","8","2020"
+                //"einzahlung",
                 //"-d 2018-05-31",
-                "14500.99"
+                //"14500.99"
             ],
             "cwd": "${workspaceFolder}/TXS.bugetalibro.ConsoleApp",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console

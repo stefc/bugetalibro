@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Globalization;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using MediatR;
 using TXS.bugetalibro.Application.UseCases;
+using TXS.Shared.Extensions;
 
 namespace TXS.bugetalibro.ConsoleApp.Commands
 {
@@ -25,14 +27,17 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
 
             var date = new DateTime(übersicht.Jahr, übersicht.Monat, 1);
             Console.WriteLine($"{date:MMMM yyyy}");
+
+            var output = ImmutableList.Create<(string,decimal)>()
+                .Add(("Kassenbestand (Monatsanfang)", übersicht.StartSaldo))
+                .Add(("Einzahlungen", übersicht.SummeEinzahlungen))
+                .Add(("Kassenbestand (Monatsende)", übersicht.EndSaldo))
+                .Where( ((string _, decimal amount) x) => x.amount >= 0);
+
+            int maxCaption = output.Max( ((string caption, decimal _) x) => x.caption.Length);
+
             Console.WriteLine(new String('-', 20));
-            
-            Console.WriteLine($"Kassenbestand (Monatsanfang): {übersicht.StartSaldo:C}");
-            if (übersicht.SummeEinzahlungen > 0m)
-            {
-                Console.WriteLine($"Einzahlungen: {übersicht.SummeEinzahlungen:C}");
-            }
-            Console.WriteLine($"Kassenbestand (Monatsende): {übersicht.EndSaldo:C}");
+            output.ForEach(((string caption, decimal amount) x) => Console.WriteLine($"{x.caption,-maxCaption} : {x.amount,20:C}"));
         }
     }
 }
