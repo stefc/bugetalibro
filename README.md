@@ -5,6 +5,22 @@ buĝetalibro ist das Coding Kata https://ccd-school.de/coding-dojo/application-k
 
 
 ## Migrations
-dotnet tool install / update --global dotnet-ef
 
-bugetalibro\backend\TXS.bugetalibro.Infrastructure> dotnet ef migrations add !NameDerMigration! --startup-project ..\..\TXS.bugetalibro.ConsoleApp\ -o Persistence/Migrations
+Tool installieren:
+
+```
+dotnet tool install --global dotnet-ef --version 3.1.7
+dotnet tool update --global dotnet-ef --version 3.1.7
+```
+
+Migrations Befehle 
+
+```
+cd backend/TXS.bugetalibro.Infrastructure
+dotnet ef migrations list --startup-project ../../TXS.bugetalibro.ConsoleApp
+```
+
+
+```
+dotnet ef migrations add <name> --startup-project ../../TXS.bugetalibro.ConsoleApp/ -o Persistence/Migrations
+```

@@ -4,14 +4,13 @@ using TXS.bugetalibro.Domain.Entities;
 
 namespace TXS.bugetalibro.Infrastructure.Persistence.Configurations
 {
-    internal class EinzahlungEntityConfig : IEntityTypeConfiguration<Einzahlung>
+    internal class KategorieEntityConfig : IEntityTypeConfiguration<Kategorie>
     {
-        public void Configure(EntityTypeBuilder<Einzahlung> builder)
+        public void Configure(EntityTypeBuilder<Kategorie> builder)
         {
             builder.HasKey(e => e.Id);
             
-            builder.Property(e => e.Betrag).HasConversion<decimal>().IsRequired();
-            builder.Property(e => e.Datum).IsRequired();
+            builder.Property(e => e.Name).IsRequired();
         }
     }
 }
