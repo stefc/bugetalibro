@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
@@ -25,9 +26,6 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
             var request = new GetÜbersicht.Request { Monat = this.Monat, Jahr = this.Jahr };
             var übersicht = await mediator.Send(request, cancellationToken);
 
-            var date = new DateTime(übersicht.Jahr, übersicht.Monat, 1);
-            Console.WriteLine($"{date:MMMM yyyy}");
-
             var output = ImmutableList.Create<(string,decimal)>()
                 .Add(("Kassenbestand (Monatsanfang)", übersicht.StartSaldo))
                 .Add(("Einzahlungen", übersicht.SummeEinzahlungen))
@@ -37,9 +35,19 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
             int maxCaption = output.Max( ((string caption, decimal _) x) => x.caption.Length);
             int maxAmount = output.Max( ((string _, decimal amount) x) => x.amount.ToString("C").Length);
 
-            Console.WriteLine(new String('-', maxCaption + maxAmount + 1));
-            output.ForEach(((string caption, decimal amount) x) => 
-                Console.WriteLine($"{x.caption.Align(maxCaption)} {x.amount.ToString("C").Align(-maxAmount)}"));
+            int widthSeparator = 3;
+            var separator = new String(' ',widthSeparator);
+            int width = maxCaption + widthSeparator + maxAmount;
+            Console.WriteLine(new DateTime(übersicht.Jahr, übersicht.Monat, 1).ToString("MMMM yyyy"));
+            Console.WriteLine(new String('-', width));
+
+            output.Select( ((string caption, decimal amount) x) => 
+                new StringBuilder(width)
+                    .Append(x.caption.Align(maxCaption))
+                    .Append(separator)
+                    .Append(x.amount.ToString("C").Align(-maxAmount))
+                    .ToString())
+                .ForEach( _ => Console.WriteLine(_));
         }
     }
 }
