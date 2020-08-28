@@ -18,20 +18,20 @@ namespace TXS.bugetalibro.Infrastructure.Persistence.Migrations
                 table: "Auszahlung",
                 column: "KategorieId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Auszahlung_Kategorie_KategorieId",
-                table: "Auszahlung",
-                column: "KategorieId",
-                principalTable: "Kategorie",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            // migrationBuilder.AddForeignKey(
+            //     name: "FK_Auszahlung_Kategorie_KategorieId",
+            //     table: "Auszahlung",
+            //     column: "KategorieId",
+            //     principalTable: "Kategorie",
+            //     principalColumn: "Id",
+            //     onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Auszahlung_Kategorie_KategorieId",
-                table: "Auszahlung");
+            // migrationBuilder.DropForeignKey(
+            //     name: "FK_Auszahlung_Kategorie_KategorieId",
+            //     table: "Auszahlung");
 
             migrationBuilder.DropIndex(
                 name: "IX_Auszahlung_KategorieId",

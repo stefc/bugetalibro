@@ -22,7 +22,7 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
             var request = new CreateEinzahlung.Request {Betrag = this.Betrag, Datum = this.Datum ?? DateTime.Today};
             var kassenbestand = await mediator.Send(request, cancellationToken);
 
-            Console.WriteLine($"Kassenbestand: {kassenbestand:C}");
+            Console.WriteLine($"{"Kassenbestand".Align(20)} {kassenbestand.ToString("C").Align(-20)}");
         }
     }
 }

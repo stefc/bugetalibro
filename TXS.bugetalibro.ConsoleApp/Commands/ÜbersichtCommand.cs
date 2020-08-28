@@ -35,9 +35,11 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
                 .Where( ((string _, decimal amount) x) => x.amount >= 0);
 
             int maxCaption = output.Max( ((string caption, decimal _) x) => x.caption.Length);
+            int maxAmount = output.Max( ((string _, decimal amount) x) => x.amount.ToString("C").Length);
 
-            Console.WriteLine(new String('-', 20));
-            output.ForEach(((string caption, decimal amount) x) => Console.WriteLine($"{x.caption,-30} : {x.amount,20:C}"));
+            Console.WriteLine(new String('-', maxCaption + maxAmount + 1));
+            output.ForEach(((string caption, decimal amount) x) => 
+                Console.WriteLine($"{x.caption.Align(maxCaption)} {x.amount.ToString("C").Align(-maxAmount)}"));
         }
     }
 }
