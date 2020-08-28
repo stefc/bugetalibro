@@ -37,7 +37,7 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
             int maxCaption = output.Max( ((string caption, decimal _) x) => x.caption.Length);
 
             Console.WriteLine(new String('-', 20));
-            output.ForEach(((string caption, decimal amount) x) => Console.WriteLine($"{x.caption,-maxCaption} : {x.amount,20:C}"));
+            output.ForEach(((string caption, decimal amount) x) => Console.WriteLine($"{x.caption,-30} : {x.amount,20:C}"));
         }
     }
 }
