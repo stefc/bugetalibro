@@ -28,7 +28,7 @@ namespace TXS.bugetalibro.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("Datum")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("KategorieId")
+                    b.Property<Guid?>("KategorieId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Notiz")
@@ -75,11 +75,10 @@ namespace TXS.bugetalibro.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("TXS.bugetalibro.Domain.Entities.Auszahlung", b =>
                 {
-                    b.HasOne("TXS.bugetalibro.Domain.Entities.Kategorie", null)
+                    b.HasOne("TXS.bugetalibro.Domain.Entities.Kategorie", "Kategorie")
                         .WithMany()
                         .HasForeignKey("KategorieId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

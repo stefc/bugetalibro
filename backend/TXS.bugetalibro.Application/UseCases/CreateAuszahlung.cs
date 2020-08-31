@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
@@ -35,12 +36,21 @@ namespace TXS.bugetalibro.Application.UseCases
             {
                 var einzahlungen = this.dataStore.Set<Einzahlung>();
                 var auszahlungen = this.dataStore.Set<Auszahlung>();
+                var kategorien = this.dataStore.Set<Kategorie>();
                 var datum = request.Datum ?? this.dateProvider.Today;
-                var auszahlung = new Auszahlung(datum, request.Betrag, new Kategorie(request.Kategorie), request.Notiz);
+                var kategory = kategorien.SingleOrDefault( e => e.Name == request.Kategorie) 
+                    ?? CreateNewKategorie(request);
+                var auszahlung = new Auszahlung(datum, request.Betrag, kategory, request.Notiz);
                 auszahlungen.Insert(auszahlung);
                 await this.dataStore.SaveChangesAsync(cancellationToken);
 
                 return new BalanceQueryFacade(einzahlungen, auszahlungen).GetBalanceAt(datum.AddDays(+1));
+            }
+
+            private Kategorie CreateNewKategorie(Request request) {
+                var kategory = new Kategorie(request.Kategorie);
+                this.dataStore.Set<Kategorie>().Insert(kategory);
+                return kategory;
             }
         }
 

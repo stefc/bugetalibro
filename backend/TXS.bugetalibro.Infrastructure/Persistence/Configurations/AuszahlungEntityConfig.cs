@@ -14,7 +14,7 @@ namespace TXS.bugetalibro.Infrastructure.Persistence.Configurations
             builder.Property(e => e.Datum).IsRequired();
             builder.Property(e => e.Notiz);
 
-            builder.HasOne<Kategorie>().WithMany().HasForeignKey("KategorieId").IsRequired().OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne( e => e.Kategorie).WithMany().OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

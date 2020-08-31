@@ -9,8 +9,8 @@ using TXS.bugetalibro.Infrastructure.Persistence;
 namespace TXS.bugetalibro.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DataStoreContext))]
-    [Migration("20200826160205_ref_kategorie")]
-    partial class ref_kategorie
+    [Migration("20200831144515_auszahlung")]
+    partial class auszahlung
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,7 +30,7 @@ namespace TXS.bugetalibro.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("Datum")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("KategorieId")
+                    b.Property<Guid?>("KategorieId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Notiz")
@@ -77,11 +77,10 @@ namespace TXS.bugetalibro.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("TXS.bugetalibro.Domain.Entities.Auszahlung", b =>
                 {
-                    b.HasOne("TXS.bugetalibro.Domain.Entities.Kategorie", null)
+                    b.HasOne("TXS.bugetalibro.Domain.Entities.Kategorie", "Kategorie")
                         .WithMany()
                         .HasForeignKey("KategorieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }
