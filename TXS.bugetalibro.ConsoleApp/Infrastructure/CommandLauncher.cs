@@ -9,12 +9,18 @@ using CommandLine;
 using FluentValidation;
 using MediatR;
 using TXS.bugetalibro.ConsoleApp.Commands;
+using Echo;
 
 namespace TXS.bugetalibro.ConsoleApp.Infrastructure
 {
+
+    using static Echo.Process;
+
     internal class CommandLauncher
     {
         private readonly IMediator mediator;
+
+        private readonly ProcessId logger;
         private readonly Type[] commandTypes;
         private readonly StringWriter helpWriter;
         private readonly Parser commandParser;
@@ -22,6 +28,7 @@ namespace TXS.bugetalibro.ConsoleApp.Infrastructure
         public CommandLauncher(IMediator mediator)
         {
             this.mediator = mediator;
+            this.logger = spawn<string>("logger", Console.WriteLine);
             this.helpWriter = new StringWriter();
             this.commandTypes = this.GetType().Assembly.GetTypes()
                 .Where(p => p.IsClass && !p.IsNested && p.GetCustomAttributes(typeof(VerbAttribute), false).Any())
@@ -40,11 +47,11 @@ namespace TXS.bugetalibro.ConsoleApp.Infrastructure
                 await this.commandParser
                     .ParseArguments(args, this.commandTypes)
                     .WithNotParsed(this.Help)
-                    .WithParsedAsync<BaseCommand>(cmd => cmd.ExecuteAsync(this.mediator, cancellationToken));
+                    .WithParsedAsync<BaseCommand>(cmd => cmd.ExecuteAsync(this.mediator, this.logger, cancellationToken));
             }
             catch (ValidationException e)
             {
-                Console.WriteLine(e.Message);
+                tell(this.logger, e.Message);
             }
         }
 
@@ -56,10 +63,10 @@ namespace TXS.bugetalibro.ConsoleApp.Infrastructure
                     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
                     .InformationalVersion ?? "0.0.0.0";
 
-                Console.WriteLine($"Version: {version}");
+                tell(this.logger, $"Version: {version}");
             }
             else
-                Console.WriteLine(this.helpWriter);
+                tell(this.logger, this.helpWriter);
         }
     }
 }

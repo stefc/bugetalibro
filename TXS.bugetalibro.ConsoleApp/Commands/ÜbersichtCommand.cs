@@ -1,16 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
+using Echo;
 using MediatR;
+using TXS.bugetalibro.Application.Models;
 using TXS.bugetalibro.Application.UseCases;
-using TXS.Shared.Extensions;
 
 namespace TXS.bugetalibro.ConsoleApp.Commands
 {
+    using static Echo.Process;
+
     [Verb("übersicht", HelpText = "Hilfe Text zur Übersicht")]
     public class ÜbersichtCommand : BaseCommand
     {
@@ -21,11 +25,14 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
         [Value(1, MetaName = "jahr", HelpText = "Jahr", Required = false)]
         public int? Jahr { get; set; }
 
-        internal override async Task ExecuteAsync(IMediator mediator, CancellationToken cancellationToken)
+        internal override async Task ExecuteAsync(IMediator mediator, ProcessId logger, CancellationToken cancellationToken)
         {
-            var request = new GetÜbersicht.Request { Monat = this.Monat, Jahr = this.Jahr };
-            var übersicht = await mediator.Send(request, cancellationToken);
+            var übersicht = await mediator.Send(new GetÜbersicht.Request { Monat = this.Monat, Jahr = this.Jahr }, cancellationToken);
+            ToViewModel(übersicht).Select( _ => tell(logger, _));
+        }
 
+        private IEnumerable<string> ToViewModel(ÜberblickModel übersicht)
+        {
             var output = ImmutableList.Create<(string,decimal)>()
                 .Add(("Kassenbestand (Monatsanfang)", übersicht.StartSaldo))
                 .Add(("Einzahlungen", übersicht.SummeEinzahlungen))
@@ -38,16 +45,16 @@ namespace TXS.bugetalibro.ConsoleApp.Commands
             int widthSeparator = 3;
             var separator = new String(' ',widthSeparator);
             int width = maxCaption + widthSeparator + maxAmount;
-            Console.WriteLine(new DateTime(übersicht.Jahr, übersicht.Monat, 1).ToString("MMMM yyyy"));
-            Console.WriteLine(new String('-', width));
-
-            output.Select( ((string caption, decimal amount) x) => 
-                new StringBuilder(width)
-                    .Append(x.caption.Align(maxCaption))
-                    .Append(separator)
-                    .Append(x.amount.ToString("C").Align(-maxAmount))
-                    .ToString())
-                .ForEach( _ => Console.WriteLine(_));
+           
+            return output
+                .Select( ((string caption, decimal amount) x) => 
+                    new StringBuilder(width)
+                        .Append(x.caption.Align(maxCaption))
+                        .Append(separator)
+                        .Append(x.amount.ToString("C").Align(-maxAmount))
+                        .ToString())
+                .Prepend( new String('-', width))
+                .Prepend( new DateTime(übersicht.Jahr, übersicht.Monat, 1).ToString("MMMM yyyy"));
         }
     }
 }

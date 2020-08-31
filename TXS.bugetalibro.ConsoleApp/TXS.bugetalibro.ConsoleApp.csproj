@@ -10,12 +10,13 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
     <PackageReference Include="MediatR" Version="8.1.0" />
+    <PackageReference Include="Echo.Process" Version="2.1.3-beta" />
+    <PackageReference Include="StrongNamer" Version="0.2.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="3.1.6" />
 	  <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.6" />
-	
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\backend\TXS.bugetalibro.Application\TXS.bugetalibro.Application.csproj" />
