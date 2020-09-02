@@ -97,6 +97,16 @@ namespace TXS.bugetalibro.Application.UseCases
             public WriteKategorie((bool isNew,Kategorie kategorie,DateTime datum) tuple) 
             => (IsNew,Kategorie,Datum) = (tuple.isNew,tuple.kategorie,tuple.datum);
         }
+        public readonly struct WriteAuszahlung 
+        {
+            public readonly DateTime Datum;
+            public readonly decimal Betrag;
+            public readonly Kategorie Kategorie; 
+            public readonly string Notiz; 
+
+            public WriteAuszahlung((DateTime datum, Decimal betrag, Kategorie kategorie,string notiz) tuple) 
+            => (Datum,Betrag,Kategorie,Notiz) = (tuple.datum,tuple.betrag,tuple.kategorie,tuple.notiz);
+        }
 
         public readonly struct Log
         {
@@ -118,6 +128,10 @@ namespace TXS.bugetalibro.Application.UseCases
 
             public static IO<(Kategorie,DateTime)> WriteKategorie((bool,Kategorie,DateTime) kategorie) =>
                 new WriteKategorie(kategorie).ToIO<WriteKategorie,(Kategorie,DateTime)>();
+
+
+            public static IO<Unit> WriteAuszahlung((DateTime,decimal, Kategorie,string) tuple) =>
+                new WriteAuszahlung(tuple).ToIO();
 
             public static IO<Unit> Log(string message) =>
                 new Log(message).ToIO();
@@ -163,6 +177,9 @@ namespace TXS.bugetalibro.Application.UseCases
                             }
                             return x.Input.Kategorie;
                         }), env);
+                    case IO<WriteAuszahlung, Unit, A> x:
+                        var auszahlung = new Auszahlung(x.Input.Datum, x.Input.Betrag, x.Input.Kategorie, x.Input.Notiz);
+                        return await Run(x.As(i => env.DataStore.Set<Auszahlung>().Insert(auszahlung)), env);
 
                     case IO<Log, Unit, A> x:
                         return await Run(x.As(i => Console.WriteLine(i.Message)),env); 
