@@ -44,78 +44,76 @@ namespace TXS.bugetalibro.Application.UseCases
             {
                 var einzahlungen = this.dataStore.Set<Einzahlung>();
                 var auszahlungen = this.dataStore.Set<Auszahlung>();
-                var kategorien = this.dataStore.Set<Kategorie>();
                 var datum = request.Datum ?? this.dateProvider.Today;
-                var kategory = kategorien.SingleOrDefault( e => e.Name == request.Kategorie) 
+                /* var kategorien = this.dataStore.Set<Kategorie>();
+                var kategory = kategorien.SingleOrDefault(e => e.Name == request.Kategorie)
                     ?? CreateNewKategorie(request);
                 var auszahlung = new Auszahlung(datum, request.Betrag, kategory, request.Notiz);
                 auszahlungen.Insert(auszahlung);
-                await this.dataStore.SaveChangesAsync(cancellationToken);
+                await this.dataStore.SaveChangesAsync(cancellationToken); */
+
+                var program = CreateProgram(request);
+                await LiveRunnerAsync.Run(program, new Env(this.dateProvider, this.dataStore, cancellationToken));
 
                 return new BalanceQueryFacade(einzahlungen, auszahlungen).GetBalanceAt(datum.AddDays(+1));
             }
 
-            private Kategorie CreateNewKategorie(Request request) {
+            private Kategorie CreateNewKategorie(Request request)
+            {
                 var kategory = new Kategorie(request.Kategorie);
                 this.dataStore.Set<Kategorie>().Insert(kategory);
                 return kategory;
             }
 
-           public static IO<Unit> CreateProgram(Request request) =>
-             GetDatum(request.Datum)
-                .Bind( _ => ReadKategorie(request.Kategorie, _))
-                .Bind( _ => WriteKategorie(_))
-                .Bind( _ => Log("Hello World"))
-                .Bind( _ => Commit()); 
-
+            public static IO<Unit> CreateProgram(Request request) =>
+              GetDatum(request.Datum)
+                 .Bind(_ => ReadKategorie(request.Kategorie, _))
+                 .Bind(_ => WriteKategorie(_))
+                 .Bind(_ => WriteAuszahlung(new Auszahlung(_.datum, request.Betrag, _.kategorie, request.Notiz)))
+                 .Bind(_ => Commit(_));
         }
 
 
         // Program description
-        
+
         public readonly struct GetDatum
         {
             public readonly DateTime? Datum;
             public GetDatum(DateTime? datum) => (Datum) = (datum);
         }
 
-        public readonly struct ReadKategorie 
+        public readonly struct ReadKategorie
         {
-            public readonly string Name; 
-            public readonly DateTime Datum; 
+            public readonly string Name;
+            public readonly DateTime Datum;
 
-            public ReadKategorie(string name, DateTime datum) => (Name,Datum) = (name, datum);
+            public ReadKategorie(string name, DateTime datum) => (Name, Datum) = (name, datum);
         }
 
-        public readonly struct WriteKategorie 
+        public readonly struct WriteKategorie
         {
-            public readonly bool IsNew; 
-            public readonly Kategorie Kategorie; 
+            public readonly bool IsNew;
+            public readonly Kategorie Kategorie;
 
             public readonly DateTime Datum;
 
-            public WriteKategorie((bool isNew,Kategorie kategorie,DateTime datum) tuple) 
-            => (IsNew,Kategorie,Datum) = (tuple.isNew,tuple.kategorie,tuple.datum);
-        }
-        public readonly struct WriteAuszahlung 
-        {
-            public readonly DateTime Datum;
-            public readonly decimal Betrag;
-            public readonly Kategorie Kategorie; 
-            public readonly string Notiz; 
-
-            public WriteAuszahlung((DateTime datum, Decimal betrag, Kategorie kategorie,string notiz) tuple) 
-            => (Datum,Betrag,Kategorie,Notiz) = (tuple.datum,tuple.betrag,tuple.kategorie,tuple.notiz);
+            public WriteKategorie((bool isNew, Kategorie kategorie, DateTime datum) tuple)
+            => (IsNew, Kategorie, Datum) = (tuple.isNew, tuple.kategorie, tuple.datum);
         }
 
-        public readonly struct Log
+        public readonly struct WriteAuszahlung
         {
-            public readonly string Message;
-            public Log(string message) => Message = message;
+            public readonly Auszahlung Auszahlung;
+
+            public WriteAuszahlung(Auszahlung auszahlung)
+            => (Auszahlung) = (auszahlung);
         }
 
         public readonly struct Commit
-        {            
+        {
+            public readonly DateTime Datum;
+
+            public Commit(DateTime datum) => (Datum) = (datum);
         }
 
 
@@ -123,33 +121,29 @@ namespace TXS.bugetalibro.Application.UseCases
         {
             public static IO<DateTime> GetDatum(DateTime? datum) =>
                 new GetDatum(datum).ToIO<GetDatum, DateTime>();
-            public static IO<(bool,Kategorie,DateTime)> ReadKategorie(string name,DateTime datum) =>
-                new ReadKategorie(name,datum).ToIO<ReadKategorie, (bool,Kategorie,DateTime)>();
+            public static IO<(bool, Kategorie, DateTime)> ReadKategorie(string name, DateTime datum) =>
+                new ReadKategorie(name, datum).ToIO<ReadKategorie, (bool, Kategorie, DateTime)>();
 
-            public static IO<(Kategorie,DateTime)> WriteKategorie((bool,Kategorie,DateTime) kategorie) =>
-                new WriteKategorie(kategorie).ToIO<WriteKategorie,(Kategorie,DateTime)>();
+            public static IO<(Kategorie kategorie, DateTime datum)> WriteKategorie((bool, Kategorie, DateTime) kategorie) =>
+                new WriteKategorie(kategorie).ToIO<WriteKategorie, (Kategorie kategorie, DateTime datum)>();
 
 
-            public static IO<Unit> WriteAuszahlung((DateTime,decimal, Kategorie,string) tuple) =>
-                new WriteAuszahlung(tuple).ToIO();
+            public static IO<DateTime> WriteAuszahlung(Auszahlung auszahlung) =>
+                new WriteAuszahlung(auszahlung).ToIO<WriteAuszahlung, DateTime>();
 
-            public static IO<Unit> Log(string message) =>
-                new Log(message).ToIO();
-
-            public static IO<Unit> Commit() => 
-                new Commit().ToIO();
- 
+            public static IO<Unit> Commit(DateTime datum) =>
+                new Commit(datum).ToIO<Commit,Unit>();
         }
 
 
-        public readonly struct Env 
+        public readonly struct Env
         {
-            public readonly IDateProvider DateProvider; 
-            public readonly IDataStore DataStore; 
+            public readonly IDateProvider DateProvider;
+            public readonly IDataStore DataStore;
             public readonly CancellationToken CancellationToken;
 
-            public Env(IDateProvider dateProvider, IDataStore dataStore, CancellationToken cancellationToken) 
-            => (DateProvider,DataStore,CancellationToken) = (dateProvider,dataStore,cancellationToken);
+            public Env(IDateProvider dateProvider, IDataStore dataStore, CancellationToken cancellationToken)
+            => (DateProvider, DataStore, CancellationToken) = (dateProvider, dataStore, cancellationToken);
         }
         public static class LiveRunnerAsync
         {
@@ -163,26 +157,28 @@ namespace TXS.bugetalibro.Application.UseCases
                     case IO<GetDatum, DateTime, A> x:
                         return await Run(x.As(i => x.Input.Datum ?? env.DateProvider.Today), env);
 
-                    case IO<ReadKategorie, (bool,Kategorie,DateTime), A> x:
+                    case IO<ReadKategorie, (bool, Kategorie, DateTime), A> x:
                         var kategorie = env.DataStore.Set<Kategorie>().SingleOrDefault(e => e.Name == x.Input.Name);
-                        return await Run(x.As(i => {
+                        return await Run(x.As(i =>
+                        {
                             return (kategorie == null, kategorie ?? new Kategorie(x.Input.Name), x.Input.Datum);
                         }), env);
 
                     case IO<WriteKategorie, Kategorie, A> x:
-                        return await Run(x.As(i => {
-                            if (x.Input.IsNew) 
+                        return await Run(x.As(i =>
+                        {
+                            if (x.Input.IsNew)
                             {
                                 env.DataStore.Set<Kategorie>().Insert(x.Input.Kategorie);
                             }
                             return x.Input.Kategorie;
                         }), env);
-                    case IO<WriteAuszahlung, Unit, A> x:
-                        var auszahlung = new Auszahlung(x.Input.Datum, x.Input.Betrag, x.Input.Kategorie, x.Input.Notiz);
-                        return await Run(x.As(i => env.DataStore.Set<Auszahlung>().Insert(auszahlung)), env);
 
-                    case IO<Log, Unit, A> x:
-                        return await Run(x.As(i => Console.WriteLine(i.Message)),env); 
+                    case IO<WriteAuszahlung, DateTime, A> x:
+                        return await Run(x.As(i => {
+                            env.DataStore.Set<Auszahlung>().Insert(x.Input.Auszahlung);
+                            return x.Input.Auszahlung.Datum;
+                        }), env);
 
                     case IO<Commit, Unit, A> x:
                         return await Run(x.As(async i => await env.DataStore.SaveChangesAsync(env.CancellationToken)), env);
