@@ -45,15 +45,16 @@ namespace TXS.bugetalibro.Application.UseCases
                 var einzahlungen = this.dataStore.Set<Einzahlung>();
                 var auszahlungen = this.dataStore.Set<Auszahlung>();
                 var datum = request.Datum ?? this.dateProvider.Today;
-                /* var kategorien = this.dataStore.Set<Kategorie>();
+                var kategorien = this.dataStore.Set<Kategorie>();
                 var kategory = kategorien.SingleOrDefault(e => e.Name == request.Kategorie)
                     ?? CreateNewKategorie(request);
                 var auszahlung = new Auszahlung(datum, request.Betrag, kategory, request.Notiz);
                 auszahlungen.Insert(auszahlung);
-                await this.dataStore.SaveChangesAsync(cancellationToken); */
+                await this.dataStore.SaveChangesAsync(cancellationToken);
 
+/*
                 var program = CreateProgram(request);
-                await LiveRunnerAsync.Run(program, new Env(this.dateProvider, this.dataStore, cancellationToken));
+                await LiveRunnerAsync.Run(program, new Env(this.dateProvider, this.dataStore, cancellationToken)); */
 
                 return new BalanceQueryFacade(einzahlungen, auszahlungen).GetBalanceAt(datum.AddDays(+1));
             }
