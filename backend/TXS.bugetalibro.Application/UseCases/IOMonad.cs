@@ -44,6 +44,12 @@ namespace TXS.bugetalibro.Application.UseCases
             public WriteAuszahlung(Auszahlung auszahlung)
             => (Auszahlung) = (auszahlung);
         }
+        public readonly struct WriteEinzahlung
+        {
+            public readonly Einzahlung Einzahlung;
+            public WriteEinzahlung(Einzahlung einzahlung)
+            => (Einzahlung) = (einzahlung);
+        }
 
         public readonly struct Commit
         {
@@ -64,6 +70,8 @@ namespace TXS.bugetalibro.Application.UseCases
 
             public static IO<DateTime> WriteAuszahlung(Auszahlung auszahlung) =>
                 new WriteAuszahlung(auszahlung).ToIO<WriteAuszahlung, DateTime>();
+            public static IO<DateTime> WriteEinzahlung(Einzahlung einzahlung) =>
+                new WriteEinzahlung(einzahlung).ToIO<WriteEinzahlung, DateTime>();
 
             public static IO<DateTime> Commit(DateTime datum) =>
                 new Commit(datum).ToIO<Commit, DateTime>();
@@ -120,6 +128,13 @@ namespace TXS.bugetalibro.Application.UseCases
                         {
                             env.DataStore.Set<Auszahlung>().Insert(x.Input.Auszahlung);
                             return x.Input.Auszahlung.Datum;
+                        }));
+
+                    case IO<WriteEinzahlung, DateTime, A> x:
+                        return await Run(x.As(i =>
+                        {
+                            env.DataStore.Set<Einzahlung>().Insert(x.Input.Einzahlung);
+                            return x.Input.Einzahlung.Datum;
                         }));
 
                     case IO<Commit, DateTime, A> x:
