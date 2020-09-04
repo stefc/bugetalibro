@@ -52,9 +52,9 @@ namespace TXS.bugetalibro.Application.UseCases
                 auszahlungen.Insert(auszahlung);
                 await this.dataStore.SaveChangesAsync(cancellationToken);
 
-/*
-                var program = CreateProgram(request);
-                await LiveRunnerAsync.Run(program, new Env(this.dateProvider, this.dataStore, cancellationToken)); */
+                /*
+                                var program = CreateProgram(request);
+                                await LiveRunnerAsync.Run(program, new Env(this.dateProvider, this.dataStore, cancellationToken)); */
 
                 return new BalanceQueryFacade(einzahlungen, auszahlungen).GetBalanceAt(datum.AddDays(+1));
             }
@@ -66,12 +66,13 @@ namespace TXS.bugetalibro.Application.UseCases
                 return kategory;
             }
 
-            public static IO<Unit> CreateProgram(Request request) =>
-              GetDatum(request.Datum)
-                 .Bind(_ => ReadKategorie(request.Kategorie, _))
-                 .Bind(_ => WriteKategorie(_))
-                 .Bind(_ => WriteAuszahlung(new Auszahlung(_.datum, request.Betrag, _.kategorie, request.Notiz)))
-                 .Bind(_ => Commit(_));
+            public static IO<DateTime> CreateProgram(Request request) =>
+                GetDatum(request.Datum);
+            /*
+               .Bind(_ => ReadKategorie(request.Kategorie, _))
+               .Bind(_ => WriteKategorie(_))
+               .Bind(_ => WriteAuszahlung(new Auszahlung(_.datum, request.Betrag, _.kategorie, request.Notiz)))
+               .Bind(_ => Commit(_)); */
         }
 
 
@@ -133,7 +134,7 @@ namespace TXS.bugetalibro.Application.UseCases
                 new WriteAuszahlung(auszahlung).ToIO<WriteAuszahlung, DateTime>();
 
             public static IO<Unit> Commit(DateTime datum) =>
-                new Commit(datum).ToIO<Commit,Unit>();
+                new Commit(datum).ToIO<Commit, Unit>();
         }
 
 
@@ -176,7 +177,8 @@ namespace TXS.bugetalibro.Application.UseCases
                         }), env);
 
                     case IO<WriteAuszahlung, DateTime, A> x:
-                        return await Run(x.As(i => {
+                        return await Run(x.As(i =>
+                        {
                             env.DataStore.Set<Auszahlung>().Insert(x.Input.Auszahlung);
                             return x.Input.Auszahlung.Datum;
                         }), env);
