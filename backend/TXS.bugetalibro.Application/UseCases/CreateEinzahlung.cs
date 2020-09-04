@@ -6,10 +6,15 @@ using MediatR;
 using TXS.bugetalibro.Application.Contracts;
 using TXS.bugetalibro.Application.Contracts.Data;
 using TXS.bugetalibro.Domain.Entities;
+using TXS.bugetalibro.Domain.Functors;
 using TXS.bugetalibro.Domain.Logic;
 
 namespace TXS.bugetalibro.Application.UseCases
 {
+
+    using static IOMonad.Operations;
+    using static TXS.bugetalibro.Application.UseCases.IOMonad;
+
     public static class CreateEinzahlung
     {
         public class Request : IRequest<decimal>
@@ -31,15 +36,18 @@ namespace TXS.bugetalibro.Application.UseCases
 
             public async Task<decimal> Handle(Request request, CancellationToken cancellationToken)
             {
+                var datum = await new Runner(new Env(this.dateProvider, this.dataStore, cancellationToken))
+                    .Run(CreateProgram(request));
+
                 var einzahlungen = this.dataStore.Set<Einzahlung>();
                 var auszahlungen = this.dataStore.Set<Auszahlung>();
-                var datum = request.Datum ?? this.dateProvider.Today;
-                var einzahlung = new Einzahlung(datum, request.Betrag);
-                einzahlungen.Insert(einzahlung);
-                await this.dataStore.SaveChangesAsync(cancellationToken);
-
-                return new BalanceQueryFacade(einzahlungen, auszahlungen).GetBalanceAt(datum.AddDays(+1));
+                return new BalanceQueryFacade(einzahlungen, auszahlungen).GetBalanceAt(datum);
             }
+
+            public static IO<DateTime> CreateProgram(Request request) =>
+                GetDatum(request.Datum)
+                    .SelectMany(_ => WriteEinzahlung(new Einzahlung(_, request.Betrag)))
+                    .SelectMany(_ => Commit(_.AddDays(+1))); 
         }
 
         public class Validator : AbstractValidator<Request>
