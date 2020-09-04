@@ -42,17 +42,15 @@ namespace TXS.bugetalibro.Application.UseCases
 
             public async Task<decimal> Handle(Request request, CancellationToken cancellationToken)
             {
-                var einzahlungen = this.dataStore.Set<Einzahlung>();
-                var auszahlungen = this.dataStore.Set<Auszahlung>();
-                var datum = request.Datum ?? this.dateProvider.Today;
- 
-                await new Runner(new Env(this.dateProvider, this.dataStore, cancellationToken))
+                var datum = await new Runner(new Env(this.dateProvider, this.dataStore, cancellationToken))
                     .Run(CreateProgram(request));
 
+                var einzahlungen = this.dataStore.Set<Einzahlung>();
+                var auszahlungen = this.dataStore.Set<Auszahlung>();
                 return new BalanceQueryFacade(einzahlungen, auszahlungen).GetBalanceAt(datum.AddDays(+1));
             }
 
-            public static IO<Unit> CreateProgram(Request request) =>
+            public static IO<DateTime> CreateProgram(Request request) =>
                 GetDatum(request.Datum)
                     .Bind(_ => ReadKategorie(request.Kategorie, _))
                     .Bind(_ => WriteKategorie(_))
@@ -113,12 +111,11 @@ namespace TXS.bugetalibro.Application.UseCases
             public static IO<(Kategorie kategorie, DateTime datum)> WriteKategorie((bool, Kategorie, DateTime) kategorie) =>
                 new WriteKategorie(kategorie).ToIO<WriteKategorie, (Kategorie kategorie, DateTime datum)>();
 
-
             public static IO<DateTime> WriteAuszahlung(Auszahlung auszahlung) =>
                 new WriteAuszahlung(auszahlung).ToIO<WriteAuszahlung, DateTime>();
 
-            public static IO<Unit> Commit(DateTime datum) =>
-                new Commit(datum).ToIO<Commit, Unit>();
+            public static IO<DateTime> Commit(DateTime datum) =>
+                new Commit(datum).ToIO<Commit, DateTime>();
         }
 
 
@@ -174,9 +171,10 @@ namespace TXS.bugetalibro.Application.UseCases
                             return x.Input.Auszahlung.Datum;
                         }));
 
-                    case IO<Commit, Unit, A> x:
-                        return await Run(x.As(async i => await env.DataStore.SaveChangesAsync(env.CancellationToken)));
-                    
+                    case IO<Commit, DateTime, A> x:
+                        await env.DataStore.SaveChangesAsync(env.CancellationToken);
+                        return await Run(x.As( i => x.Input.Datum));
+                            
                     default: throw new NotSupportedException($"Not supported operation {p}");
                 }
             }

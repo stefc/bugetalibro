@@ -51,6 +51,7 @@ namespace TXS.bugetalibro.Domain.Functors
         public static IO<A> Ignore<I, A>(this IO<I, Unit, A> x) => x.Next(unit());
 
         public static IO<A> As<I, O, A>(this IO<I, O, A> x, Func<I, O> process) => x.Next(process(x.Input));
+
         public static IO<A> As<I, A>(this IO<I, Unit, A> x, Action<I> process)
         {
             process(x.Input);
