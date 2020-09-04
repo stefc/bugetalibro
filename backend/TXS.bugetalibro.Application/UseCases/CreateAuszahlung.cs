@@ -17,7 +17,7 @@ namespace TXS.bugetalibro.Application.UseCases
 
     using Unit = System.ValueTuple;
 
-    using static CreateAuszahlung.ProgramOperations;
+    using static CreateAuszahlung.Operations;
 
     public static class CreateAuszahlung
     {
@@ -47,15 +47,15 @@ namespace TXS.bugetalibro.Application.UseCases
 
                 var einzahlungen = this.dataStore.Set<Einzahlung>();
                 var auszahlungen = this.dataStore.Set<Auszahlung>();
-                return new BalanceQueryFacade(einzahlungen, auszahlungen).GetBalanceAt(datum.AddDays(+1));
+                return new BalanceQueryFacade(einzahlungen, auszahlungen).GetBalanceAt(datum);
             }
 
             public static IO<DateTime> CreateProgram(Request request) =>
                 GetDatum(request.Datum)
-                    .Bind(_ => ReadKategorie(request.Kategorie, _))
-                    .Bind(_ => WriteKategorie(_))
-                    .Bind(_ => WriteAuszahlung(new Auszahlung(_.datum, request.Betrag, _.kategorie, request.Notiz)))
-                    .Bind(_ => Commit(_)); 
+                    .SelectMany(_ => ReadKategorie(request.Kategorie, _))
+                    .SelectMany(_ => WriteKategorie(_))
+                    .SelectMany(_ => WriteAuszahlung(new Auszahlung(_.datum, request.Betrag, _.kategorie, request.Notiz)))
+                    .SelectMany(_ => Commit(_.AddDays(+1))); 
         }
 
 
@@ -88,7 +88,6 @@ namespace TXS.bugetalibro.Application.UseCases
         public readonly struct WriteAuszahlung
         {
             public readonly Auszahlung Auszahlung;
-
             public WriteAuszahlung(Auszahlung auszahlung)
             => (Auszahlung) = (auszahlung);
         }
@@ -96,12 +95,11 @@ namespace TXS.bugetalibro.Application.UseCases
         public readonly struct Commit
         {
             public readonly DateTime Datum;
-
             public Commit(DateTime datum) => (Datum) = (datum);
         }
 
 
-        public static class ProgramOperations
+        public static class Operations
         {
             public static IO<DateTime> GetDatum(DateTime? datum) =>
                 new GetDatum(datum).ToIO<GetDatum, DateTime>();
@@ -109,7 +107,7 @@ namespace TXS.bugetalibro.Application.UseCases
                 new ReadKategorie(name, datum).ToIO<ReadKategorie, (bool, Kategorie, DateTime)>();
 
             public static IO<(Kategorie kategorie, DateTime datum)> WriteKategorie((bool, Kategorie, DateTime) kategorie) =>
-                new WriteKategorie(kategorie).ToIO<WriteKategorie, (Kategorie kategorie, DateTime datum)>();
+                new WriteKategorie(kategorie).ToIO<WriteKategorie, (Kategorie, DateTime)>();
 
             public static IO<DateTime> WriteAuszahlung(Auszahlung auszahlung) =>
                 new WriteAuszahlung(auszahlung).ToIO<WriteAuszahlung, DateTime>();

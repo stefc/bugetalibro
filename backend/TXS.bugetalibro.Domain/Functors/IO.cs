@@ -11,7 +11,7 @@ namespace TXS.bugetalibro.Domain.Functors
 
     public interface IO<A>
     {
-        IO<B> Bind<B>(Func<A, IO<B>> f);
+        IO<B> SelectMany<B>(Func<A, IO<B>> f);
     }
 
     public sealed class Return<A> : IO<A>
@@ -19,7 +19,7 @@ namespace TXS.bugetalibro.Domain.Functors
         public readonly A Result;
         public Return(A a) => Result = a;
 
-        public IO<B> Bind<B>(Func<A, IO<B>> f) => f(Result);
+        public IO<B> SelectMany<B>(Func<A, IO<B>> f) => f(Result);
     }
 
     public class IO<I, O, A> : IO<A>
@@ -28,7 +28,7 @@ namespace TXS.bugetalibro.Domain.Functors
         public readonly Func<O, IO<A>> Next;
         public IO(I input, Func<O, IO<A>> next) => (Input, Next) = (input, next);
 
-        public IO<B> Bind<B>(Func<A, IO<B>> f) => new IO<I, O, B>(Input, r => Next(r).Bind(f));
+        public IO<B> SelectMany<B>(Func<A, IO<B>> f) => new IO<I, O, B>(Input, r => Next(r).SelectMany(f));
     }
 
     public static class IOMonad
@@ -37,10 +37,10 @@ namespace TXS.bugetalibro.Domain.Functors
             new Return<A>(a);
 
         public static IO<B> Select<A, B>(this IO<A> m, Func<A, B> f) =>
-            m.Bind(a => f(a).Lift());
+            m.SelectMany(a => f(a).Lift());
 
         public static IO<C> SelectMany<A, B, C>(this IO<A> m, Func<A, IO<B>> f, Func<A, B, C> project) =>
-            m.Bind(a => f(a).Bind(b => project(a, b).Lift()));
+            m.SelectMany(a => f(a).SelectMany(b => project(a, b).Lift()));
     }
 
     public static partial class LinqExtensions
