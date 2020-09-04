@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using FakeItEasy;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +19,26 @@ namespace TXS.bugetalibro.UnitTests.Helper
 
         public const string SampleDb = "sample.db";
 
+        public static IDataSet<T> CreateDataSet<T>(IList<T> container) where T : class
+        {
+            IQueryable<T> fakeIQueryable = new List<T>().AsQueryable();
+            var fakeDbSet = A.Fake<IDataSet<T>>((d => d.Implements(typeof(IQueryable<T>))));
+
+            A.CallTo(() => ((IQueryable<T>)fakeDbSet).GetEnumerator())
+                .Returns(fakeIQueryable.GetEnumerator());
+
+            A.CallTo(() => ((IQueryable<T>)fakeDbSet).Provider)
+                .Returns(fakeIQueryable.Provider);
+
+            A.CallTo(() => ((IQueryable<T>)fakeDbSet).Expression)
+                .Returns(fakeIQueryable.Expression);
+
+            A.CallTo(() => ((IQueryable<T>)fakeDbSet).ElementType)
+                .Returns(fakeIQueryable.ElementType);
+
+            return fakeDbSet;
+        }
+
         public class DateProvider : IDateProvider
         {
             public DateTime Today { get; }
@@ -26,8 +49,8 @@ namespace TXS.bugetalibro.UnitTests.Helper
             }
         }
 
-         public class DataStoreInitializer : IDataStoreInitializer
-    {
+        public class DataStoreInitializer : IDataStoreInitializer
+        {
             private readonly DataStoreContext dataStoreContext;
 
             public DataStoreInitializer(DataStoreContext dataStoreContext)
@@ -35,26 +58,27 @@ namespace TXS.bugetalibro.UnitTests.Helper
                 this.dataStoreContext = dataStoreContext;
             }
 
-            async Task IDataStoreInitializer.MigrateAsync() 
+            async Task IDataStoreInitializer.MigrateAsync()
                 => await this.dataStoreContext.Database.EnsureCreatedAsync();
         }
     }
 
-    public static class OverridesExtensions {
+    public static class OverridesExtensions
+    {
 
         public static IServiceCollection AddTestDateProvider(this IServiceCollection services)
             => services.Replace(ServiceDescriptor.Transient<IDateProvider>(sp => new TestOverrides.DateProvider()));
 
         public static IServiceCollection AddInMemoryDb(this IServiceCollection services)
             => services
-                .Replace(ServiceDescriptor.Scoped<DbContextOptions<DataStoreContext>>( _ => CreateInMemoryDb()))
-                .Replace(ServiceDescriptor.Scoped<IDataStoreInitializer>( 
+                .Replace(ServiceDescriptor.Scoped<DbContextOptions<DataStoreContext>>(_ => CreateInMemoryDb()))
+                .Replace(ServiceDescriptor.Scoped<IDataStoreInitializer>(
                     sp => new TestOverrides.DataStoreInitializer(sp.GetRequiredService<DataStoreContext>())));
 
         public static IServiceCollection AddSampleDb(this IServiceCollection services, string path)
             => services
-                .Replace(ServiceDescriptor.Scoped<DbContextOptions<DataStoreContext>>( _ => CreateNewSampleDb(path)))
-                .Replace(ServiceDescriptor.Scoped<IDataStoreInitializer>( 
+                .Replace(ServiceDescriptor.Scoped<DbContextOptions<DataStoreContext>>(_ => CreateNewSampleDb(path)))
+                .Replace(ServiceDescriptor.Scoped<IDataStoreInitializer>(
                     sp => new TestOverrides.DataStoreInitializer(sp.GetRequiredService<DataStoreContext>())));
 
 

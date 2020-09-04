@@ -45,34 +45,19 @@ namespace TXS.bugetalibro.Application.UseCases
                 var einzahlungen = this.dataStore.Set<Einzahlung>();
                 var auszahlungen = this.dataStore.Set<Auszahlung>();
                 var datum = request.Datum ?? this.dateProvider.Today;
-                var kategorien = this.dataStore.Set<Kategorie>();
-                var kategory = kategorien.SingleOrDefault(e => e.Name == request.Kategorie)
-                    ?? CreateNewKategorie(request);
-                var auszahlung = new Auszahlung(datum, request.Betrag, kategory, request.Notiz);
-                auszahlungen.Insert(auszahlung);
-                await this.dataStore.SaveChangesAsync(cancellationToken);
-
-                /*
-                                var program = CreateProgram(request);
-                                await LiveRunnerAsync.Run(program, new Env(this.dateProvider, this.dataStore, cancellationToken)); */
+ 
+                await new Runner(new Env(this.dateProvider, this.dataStore, cancellationToken))
+                    .Run(CreateProgram(request));
 
                 return new BalanceQueryFacade(einzahlungen, auszahlungen).GetBalanceAt(datum.AddDays(+1));
             }
 
-            private Kategorie CreateNewKategorie(Request request)
-            {
-                var kategory = new Kategorie(request.Kategorie);
-                this.dataStore.Set<Kategorie>().Insert(kategory);
-                return kategory;
-            }
-
-            public static IO<DateTime> CreateProgram(Request request) =>
-                GetDatum(request.Datum);
-            /*
-               .Bind(_ => ReadKategorie(request.Kategorie, _))
-               .Bind(_ => WriteKategorie(_))
-               .Bind(_ => WriteAuszahlung(new Auszahlung(_.datum, request.Betrag, _.kategorie, request.Notiz)))
-               .Bind(_ => Commit(_)); */
+            public static IO<Unit> CreateProgram(Request request) =>
+                GetDatum(request.Datum)
+                    .Bind(_ => ReadKategorie(request.Kategorie, _))
+                    .Bind(_ => WriteKategorie(_))
+                    .Bind(_ => WriteAuszahlung(new Auszahlung(_.datum, request.Betrag, _.kategorie, request.Notiz)))
+                    .Bind(_ => Commit(_)); 
         }
 
 
@@ -88,7 +73,6 @@ namespace TXS.bugetalibro.Application.UseCases
         {
             public readonly string Name;
             public readonly DateTime Datum;
-
             public ReadKategorie(string name, DateTime datum) => (Name, Datum) = (name, datum);
         }
 
@@ -147,9 +131,16 @@ namespace TXS.bugetalibro.Application.UseCases
             public Env(IDateProvider dateProvider, IDataStore dataStore, CancellationToken cancellationToken)
             => (DateProvider, DataStore, CancellationToken) = (dateProvider, dataStore, cancellationToken);
         }
-        public static class LiveRunnerAsync
+        
+        public class Runner
         {
-            public static async Task<A> Run<A>(IO<A> p, Env env)
+            private readonly Env env; 
+
+            public Runner(Env env)
+            {
+                this.env=env;
+            }
+            public async Task<A> Run<A>(IO<A> p)
             {
                 switch (p)
                 {
@@ -157,38 +148,39 @@ namespace TXS.bugetalibro.Application.UseCases
                         return r.Result;
 
                     case IO<GetDatum, DateTime, A> x:
-                        return await Run(x.As(i => x.Input.Datum ?? env.DateProvider.Today), env);
+                        return await Run(x.As(i => x.Input.Datum ?? env.DateProvider.Today));
 
                     case IO<ReadKategorie, (bool, Kategorie, DateTime), A> x:
                         var kategorie = env.DataStore.Set<Kategorie>().SingleOrDefault(e => e.Name == x.Input.Name);
                         return await Run(x.As(i =>
                         {
                             return (kategorie == null, kategorie ?? new Kategorie(x.Input.Name), x.Input.Datum);
-                        }), env);
+                        }));
 
-                    case IO<WriteKategorie, Kategorie, A> x:
+                    case IO<WriteKategorie, (Kategorie,DateTime), A> x:
                         return await Run(x.As(i =>
                         {
                             if (x.Input.IsNew)
                             {
                                 env.DataStore.Set<Kategorie>().Insert(x.Input.Kategorie);
                             }
-                            return x.Input.Kategorie;
-                        }), env);
+                            return (x.Input.Kategorie,x.Input.Datum);
+                        }));
 
                     case IO<WriteAuszahlung, DateTime, A> x:
                         return await Run(x.As(i =>
                         {
                             env.DataStore.Set<Auszahlung>().Insert(x.Input.Auszahlung);
                             return x.Input.Auszahlung.Datum;
-                        }), env);
+                        }));
 
                     case IO<Commit, Unit, A> x:
-                        return await Run(x.As(async i => await env.DataStore.SaveChangesAsync(env.CancellationToken)), env);
-
+                        return await Run(x.As(async i => await env.DataStore.SaveChangesAsync(env.CancellationToken)));
+                    
                     default: throw new NotSupportedException($"Not supported operation {p}");
                 }
             }
+
         }
 
         public class Validator : AbstractValidator<Request>
