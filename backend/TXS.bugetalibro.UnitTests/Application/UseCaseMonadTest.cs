@@ -10,7 +10,7 @@ using TXS.bugetalibro.Application.Contracts.Data;
 using System.Collections.Generic;
 using TXS.bugetalibro.UnitTests.Helper;
 using TXS.bugetalibro.Domain.Functors;
-using static TXS.bugetalibro.Application.UseCases.CreateAuszahlung;
+using static TXS.bugetalibro.Application.UseCases.IOMonad;
 
 namespace TXS.bugetalibro.UnitTests.Application
 {
@@ -41,7 +41,7 @@ namespace TXS.bugetalibro.UnitTests.Application
             A.CallTo(() => dataStore.Set<Auszahlung>()).Returns(fakedAuszahlungen);
 
             // (A)ct 
-            var datum = await new CreateAuszahlung.Runner(new Env(dateProvider, dataStore, CancellationToken.None))
+            var datum = await new Runner(new Env(dateProvider, dataStore, CancellationToken.None))
                     .Run(CreateAuszahlung.Handler.CreateProgram(request));
 
             // (A)ssert
